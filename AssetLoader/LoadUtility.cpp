@@ -4,14 +4,14 @@
 LoadUtility::LoadUtility(){}
 LoadUtility::~LoadUtility(){}
 
-void LoadUtility::loadModel( std::vector<Mesh> &InMeshVec,const std::string &path)
+void LoadUtility::loadModel( std::vector<Mesh> &InMeshVec,const std::string &path,MaterialType TextureType)
 {
 	std::vector<Vertex>verts;
 	std::vector<GLuint>indices;
 	std::vector<Texture> textures;
-	Assimp::Importer importer2;
+	Assimp::Importer importer;
 
-	const aiScene *scene2 = importer2.ReadFile(path,
+	const aiScene *scene2 = importer.ReadFile(path,
 		aiProcess_CalcTangentSpace |
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
@@ -53,7 +53,7 @@ void LoadUtility::loadModel( std::vector<Mesh> &InMeshVec,const std::string &pat
 			tmpVert.Position = tmpPos;
 			tmpVert.Normal = tmpNorm;
 			tmpVert.diffuse = tmpCol;
-			if (tmpMesh->mTextureCoords[0])
+			if (tmpMesh->mTextureCoords[0] && TextureType != MaterialType::TEXTURE_3D)
 			{
 				tmpVert.texCoord.x = tmpMesh->mTextureCoords[0][j].x;
 				tmpVert.texCoord.y = tmpMesh->mTextureCoords[0][j].y;
@@ -74,7 +74,7 @@ void LoadUtility::loadModel( std::vector<Mesh> &InMeshVec,const std::string &pat
 				indices.push_back(tmpFace.mIndices[k]);
 			}
 		}
-		if (tmpMesh->mMaterialIndex >= 0)
+		if (tmpMesh->mMaterialIndex >= 0&&TextureType!=MaterialType::TEXTURE_3D)
 		{
 			aiMaterial* material = scene2->mMaterials[tmpMesh->mMaterialIndex];
 			// We assume a convention for sampler names in the shaders. Each diffuse texture should be named
@@ -91,12 +91,20 @@ void LoadUtility::loadModel( std::vector<Mesh> &InMeshVec,const std::string &pat
 			std::vector<Texture> specularMaps = this->loadMaterialTextures(material, aiTextureType_SPECULAR, "material.texture_specular");
 			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 		}
-
-		InMeshVec.push_back(Mesh(verts, indices, textures));
+		if (TextureType == MaterialType::TEXTURE_3D)
+		{
+			textures.clear();
+			textures.push_back(Texture());
+			textures[0].id = loadCubemap();
+			std::cout << "TexID from Loader main " << textures[0].id << "'\n";
+		}
+		InMeshVec.push_back(Mesh(verts, indices, textures,TextureType));
 		verts.clear();
 		indices.clear();
 		textures.clear();
 	}
+	
+
 }
 
 std::vector<Texture> LoadUtility::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
@@ -157,5 +165,44 @@ GLint LoadUtility::TextureFromFile(std::string texpath)
 	std::cout << "\nTexture Loaded: " + FileName;
 	SOIL_free_image_data(image);
 	
+	return textureID;
+}
+GLuint LoadUtility::loadCubemap()
+{
+	std::vector<const GLchar*> faces;
+	faces.push_back("media/right.jpg");
+	faces.push_back("media/left.jpg");
+	faces.push_back("media/top.jpg");
+	faces.push_back("media/bottom.jpg");
+	faces.push_back("media/back.jpg");
+	faces.push_back("media/front.jpg");
+	
+	
+	
+	GLuint textureID;
+	glGenTextures(1, &textureID);
+	//glActiveTexture(GL_TEXTURE0);
+
+	int width, height;
+	unsigned char* image;
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+	for (GLuint i = 0; i < faces.size(); i++)
+	{
+		image = SOIL_load_image(faces[i], &width, &height, 0, SOIL_LOAD_RGB);
+		glTexImage2D(
+			GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
+			GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image
+		);
+		SOIL_free_image_data(image);
+		std::cout << "\nTexture Loaded: " + std::string(faces[i])<<"\n";
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	std::cout << "TexID from Loader " << textureID << "'\n";
 	return textureID;
 }

@@ -1,0 +1,49 @@
+﻿
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is up-to-date with 'origin/master'.
+#
+# Changes to be committed:
+#	modified:   AssetLoader.VC.db
+#	modified:   AssetLoader/LoadUtility.cpp
+#	modified:   AssetLoader/LoadUtility.h
+#	modified:   AssetLoader/Loader.cpp
+#	modified:   AssetLoader/Mesh.cpp
+#	modified:   AssetLoader/Mesh.h
+#	modified:   AssetLoader/Model.cpp
+#	modified:   AssetLoader/Model.h
+#	modified:   AssetLoader/SHCamera.cpp
+#	modified:   AssetLoader/SHCamera.h
+#	new file:   AssetLoader/assets/GrossFace.fbx
+#	new file:   AssetLoader/assets/box.fbx
+#	new file:   AssetLoader/assets/robot.fbx
+#	new file:   AssetLoader/media/SculptShape.png
+#	new file:   AssetLoader/media/back.jpg
+#	new file:   AssetLoader/media/bottom.jpg
+#	new file:   AssetLoader/media/bottom1.jpg
+#	new file:   AssetLoader/media/front.jpg
+#	new file:   AssetLoader/media/left.jpg
+#	new file:   AssetLoader/media/right.jpg
+#	new file:   AssetLoader/media/robot.mtl
+#	new file:   AssetLoader/media/robot.png
+#	new file:   AssetLoader/media/top.jpg
+#	new file:   AssetLoader/shaders/3Dfrag.glsl
+#	new file:   AssetLoader/shaders/3Dvert.glsl
+#	deleted:    lc4u5uo0.iok.txt
+#	deleted:    ne2dypsb.rt5.txt
+#	deleted:    p4tvhv1w.izt.txt
+#	deleted:    zwo1euh3.jyd.txt
+#
+# Changes not staged for commit:
+#	deleted:    AssetLoader/assets/robot.fbx
+#	deleted:    AssetLoader/media/bottom1.jpg
+#	deleted:    AssetLoader/media/front.jpg
+#	deleted:    AssetLoader/media/left.jpg
+#	deleted:    AssetLoader/media/mat 10.png
+#	deleted:    AssetLoader/media/mat 12 06 00.png
+#	deleted:    AssetLoader/media/right.jpg
+#	deleted:    AssetLoader/media/robot.mtl
+#	deleted:    AssetLoader/media/robot.png
+#
+

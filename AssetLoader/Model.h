@@ -11,8 +11,9 @@
 class Model {
 
 	std::vector<Mesh> meshes;
-	enum class MaterialType {NONE, TEXTURE};
+	
 	Shaders* ModelShader;
+	
 	GLuint MatrixID;
 	GLint modelLoc;
 	GLint lightPosLoc;
@@ -21,10 +22,14 @@ class Model {
 	glm::vec3 lpos;
 	glm::vec3 lightColor;
 
+	MaterialType ModelMaterial;
+
 public:
+	//determines which shader to load
 	
 	Model(const std::string&);
-	Model(const std::string&, const std::string&, const std::string&);
+	Model(const std::string & InPath, MaterialType);
+	
 	~Model();
 	void drawModel(glm::vec3&, glm::mat4&, glm::mat4&)const;
 	GLuint GetModelShaderID();

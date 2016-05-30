@@ -18,14 +18,20 @@ GLuint WIDTH = 1200;
 GLuint HEIGHT = 1600;
 GLfloat fov = 90.0f;
 
+glm::vec3 eye(0, 0, 1);
+glm::vec3 center(0, 0, 0);
+glm::vec3 up(0, 1, 0);
+
 glm::vec3 actor(0, 0, 0);
 
-glm::vec3 lpos(0, 10,  20);
+glm::vec3 lpos(0, -20,  0);
 glm::vec3 lightColor(1, 1, 1);
 
 SHCamera cam;
+SHCamera cam1;
+SHCamera cam2;
 GLfloat SHCamera::radius;
-
+int ProjectionY;
 int main() { 
 	
 	glfwInit();
@@ -59,40 +65,50 @@ int main() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 	
-
-	Model myMeshes("assets/ground.fbx", "shaders/texVert.glsl", "shaders/texFrag.glsl");
-	Model myMeshes2("assets/SkySphere.fbx","shaders/texVert.glsl", "shaders/texFrag.glsl");
-	Model myMeshes3("assets/AY.fbx", "shaders/texVert.glsl", "shaders/texFrag.glsl");
+	Model Character("assets/GrossFace.fbx", MaterialType::TEXTURE_2D);
+	Model Ground("assets/ground.fbx", MaterialType::TEXTURE_2D);
+	Model Sky("assets/box.fbx", MaterialType::TEXTURE_3D);
 		
 	glm::mat4 Model;
-	glm::mat4 Projection = glm::perspective(fov, (float)HEIGHT / WIDTH, 0.1f, 300.0f);
-	glm::mat4 MVP = Projection * Model;
+	glm::mat4 CharMod(1.0f);
+	glm::mat4 GroundMod(1.0f);
+	//glm::mat4 SkyMod(1.0f);
+
 	
 	while (!glfwWindowShouldClose(window)) 
 		{
-			glm::mat4 Projection = glm::perspective(fov, (GLfloat)HEIGHT / WIDTH, 0.1f, 300.0f);
+			glm::mat4 Projection = glm::perspective(fov, (float)HEIGHT / WIDTH, 0.1f, 300.0f)*Transform::translate(0, ProjectionY, 0);
+			glm::mat4 MVP = Projection;
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glCullFace(GL_BACK);
+		   
+			
+			//sky
+			glm::mat4 View = cam.UpdateCamera(window, actor);
+			glm::mat4 SkyMod = cam.GetView();
+			
+			//SkyMod = glm::rotate(SkyMod, cam.GetYaw(), cam.GetCamUp());
+			Sky.drawModel(cam.GetCamPos(), SkyMod, Projection);
 
 			
-			//anna
-			Model = cam.UpdateCamera(window,actor)*Transform::translate(actor.x, actor.y, actor.z);
-			Model = glm::rotate(Model,cam.GetYaw(),cam.GetCamUp()) *Transform::scale(.01,.01,.01);
-			myMeshes.drawModel(cam.GetCamPos(),Model,MVP);
+			GroundMod = cam.UpdateCamera(window, actor)*Transform::scale(150, 150, 150);
+			Ground.drawModel(cam.GetCamPos(), GroundMod, MVP);
 			
-			//ground			
-			Model = cam.UpdateCamera(window, actor)*Transform::scale(200, 200, 200);
-			myMeshes2.drawModel(cam.GetCamPos(), Model, MVP);
-			//sky
-			Model = cam.UpdateCamera(window, actor)*Transform::translate(actor.x, actor.y, actor.z)*Transform::scale(200, 200, 200);
-			myMeshes3.drawModel(cam.GetCamPos(), Model, MVP);
+			CharMod = cam.UpdateCamera(window, actor)*Transform::translate(actor.x, 5, actor.z)*Transform::scale(2, 2, 2);
+			CharMod = glm::rotate(CharMod, cam.GetYaw(), cam.GetCamUp());
+			Character.drawModel(cam.GetCamPos(), CharMod, MVP);
+		
+		
+			
+			
+			
 					
 			
 			moveActor(window);
-			myMeshes.UpdateLightPosition(lpos);//hack fix later
-			myMeshes2.UpdateLightPosition(lpos);
-			myMeshes3.UpdateLightPosition(lpos);
+			Character.UpdateLightPosition(lpos);//hack fix later
+			Ground.UpdateLightPosition(lpos);
+			Sky.UpdateLightPosition(lpos);
 			glfwPollEvents();
 			glfwSwapBuffers(window);
 		}
@@ -116,9 +132,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		if (key == GLFW_KEY_KP_4)
 			lpos.x = lpos.x - 100;
 		if (key == GLFW_KEY_KP_ADD)
-			lpos.y = lpos.y + 100;
+			ProjectionY++;
 		if (key == GLFW_KEY_KP_SUBTRACT)
-			lpos.y = lpos.y - 100;
+			ProjectionY--;
 }
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {

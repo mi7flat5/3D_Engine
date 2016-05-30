@@ -14,6 +14,7 @@ class LoadUtility
 	std::vector<Mesh> meshes;
 	std::vector<Texture> texRecord;
 	GLint TextureFromFile(std::string texpath);
+	GLuint loadCubemap();
 	std::vector<Texture> loadMaterialTextures(aiMaterial * mat, aiTextureType type, std::string typeName);
 	
 public:
@@ -21,6 +22,6 @@ public:
 	LoadUtility();
 	~LoadUtility();
 	
-	void loadModel(std::vector<Mesh> &InMeshVec,const std::string&);
+	void loadModel(std::vector<Mesh> &InMeshVec,const std::string&,MaterialType);
 };
 

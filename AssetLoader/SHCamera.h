@@ -20,6 +20,8 @@ class SHCamera
 	glm::vec3 campos;
 	glm::vec3 camfront;
 	glm::vec3 camup;
+
+	glm::mat4 CurrentView;
 	
 	
 public:
@@ -30,10 +32,12 @@ public:
 	~SHCamera();
 	
 	glm::mat4 UpdateCamera(GLFWwindow*, const glm::vec3&);
-	void UpdateCamera();
+	glm::mat4 UpdateCamera();
+	glm::mat4 GetView()const;
 	glm::vec3 GetCamPos()const;
 	glm::vec3 GetCamFront()const;
 	glm::vec3 GetCamUp()const;
 	GLfloat GetYaw()const;
 };
+
 
