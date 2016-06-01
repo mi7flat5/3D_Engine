@@ -9,5 +9,6 @@ uniform mat4 Model;
 void main()
 {
     gl_Position =   MVP*Model* vec4(position, 1.0);  
+
     TexCoords = position;
 }  

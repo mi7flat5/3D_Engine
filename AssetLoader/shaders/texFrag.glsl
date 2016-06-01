@@ -1,4 +1,5 @@
 #version 450 core
+
 struct Material {
     sampler2D texture_diffuse1;
     sampler2D texture_specular1;
@@ -8,6 +9,7 @@ struct Material {
 in vec3 fragmentColor;
 in vec3 Normal;
 in vec3 FragPos;
+
 in vec2 TexCoords;
 
 uniform vec3 lightColor;
@@ -17,7 +19,8 @@ uniform Material material;
 
 out vec3 color;
 
-void main()
+
+void main()//texture fragment shader
 {
     // Ambient
     float ambientStrength = 0.2f;
@@ -37,17 +40,6 @@ void main()
     vec3 specular = specularStrength * spec*vec3(texture(material.texture_specular1,TexCoords))*lightColor;  
         
     vec3 result = (ambient + diffuse + specular);
-    color =  result;
+    color =  result; //output for this main is vec3
 	
 } 
-
-
-   
-   
-      
-   /* // Combine results
-    vec3 ambient = light.ambient * vec3(texture(mat.texture_diffuse1, TexCoords));
-    vec3 diffuse = light.diffuse * diff * vec3(texture(mat.texture_diffuse1, TexCoords));
-    vec3 specular = light.specular * spec * vec3(texture(mat.texture_specular1, TexCoords));
-   
-    return (ambient + diffuse + specular);*/

@@ -34,6 +34,7 @@ public:
 	glm::mat4 UpdateCamera(GLFWwindow*, const glm::vec3&);
 	glm::mat4 UpdateCamera();
 	glm::mat4 GetView()const;
+	GLfloat GetPitch() const;
 	glm::vec3 GetCamPos()const;
 	glm::vec3 GetCamFront()const;
 	glm::vec3 GetCamUp()const;

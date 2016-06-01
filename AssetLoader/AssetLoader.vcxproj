@@ -154,6 +154,7 @@
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="SHCamera.h" />
     <ClInclude Include="LoadUtility.h" />
     <ClInclude Include="Mesh.h" />
@@ -162,10 +163,18 @@
     <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\3Dfrag.glsl" />
+    <None Include="shaders\3Dvert.glsl" />
     <None Include="shaders\frag.glsl" />
+    <None Include="shaders\ReflectFrag.glsl" />
+    <None Include="shaders\ReflectVert.glsl" />
+    <None Include="shaders\RefractFrag.glsl" />
     <None Include="shaders\texFrag.glsl" />
     <None Include="shaders\texVert.glsl" />
     <None Include="shaders\vert.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AssetLoader.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

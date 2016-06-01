@@ -21,8 +21,8 @@ void main(){
 
 	// The color of each vertex will be interpolated
 	// to produce the color of each fragment
-	FragPos = vec3( vec4(vertexPosition_modelspace, 1.0f));
-    Normal = mat3(transpose(inverse(Model))) * norms; 
+	FragPos = vec3( Model*vec4(vertexPosition_modelspace, 1.0f));
+    Normal = norms;//mat3(transpose(inverse(Model))) * norms; 
 	fragmentColor = cols;
 	TexCoords = texCoords;
 }

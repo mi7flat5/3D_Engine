@@ -5,7 +5,9 @@
 #include<gtc/matrix_transform.hpp>
 #include<gtc/type_ptr.hpp>
 #include<vector>
-enum class MaterialType { NO_TEXTURE, TEXTURE_2D, TEXTURE_3D };
+enum class MaterialType { NO_TEXTURE, TEXTURE_2D, TEXTURE_3D, TEXTURE_2D_REFLECT
+, TEXTURE_2D_REFRACT
+};
 struct Vertex {
 	glm::vec3 Position;
 	glm::vec3 Normal;

@@ -59,6 +59,9 @@
     <ClInclude Include="SHCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\frag.glsl">
@@ -73,5 +76,25 @@
     <None Include="shaders\texFrag.glsl">
       <Filter>shaders</Filter>
     </None>
+    <None Include="shaders\3Dfrag.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\3Dvert.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\ReflectFrag.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\RefractFrag.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\ReflectVert.glsl">
+      <Filter>shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AssetLoader.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

@@ -2,10 +2,11 @@
 #include<glm.hpp>
 #include<gtc/matrix_transform.hpp>
 #include<gtc/type_ptr.hpp>
+#include<iostream>
 
-SHCamera::SHCamera () : pitch(30), campos(glm::vec3(0, 0, 5)),camfront(glm::vec3(0, 0, -1)),camup(glm::vec3(0, 1, 0))
+SHCamera::SHCamera () : pitch(0), campos(glm::vec3(0, 0, 5)),camfront(glm::vec3(0, 0, -1)),camup(glm::vec3(0, 1, 0)),yaw(0)
 {
-	radius = 30.0;
+	radius = 70.0;
 	vdist = radius*sin(glm::radians(pitch));
 }
 SHCamera::~SHCamera(){}
@@ -16,6 +17,7 @@ glm::mat4 SHCamera::UpdateCamera(GLFWwindow *window,const glm::vec3 &actor)
 	glfwGetCursorPos(window, &xpos, &ypos);
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) || FirstRun == 0|| glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))//TODO move controls out of class, add this conditional to its own method
 	{
+		
 		GLfloat xoffset = xpos - lastX;
 		GLfloat yoffset = lastY - ypos; // Reversed since y-coordinates go from bottom to left
 		lastX = xpos;
@@ -39,7 +41,7 @@ glm::mat4 SHCamera::UpdateCamera(GLFWwindow *window,const glm::vec3 &actor)
 		GLfloat phi = 90 - pitch;
 
 		front.x = radius * sin(glm::radians(phi))*cos(glm::radians(theta));
-		front.y = radius * cos(glm::radians(pitch + 90))+8; //TODO add parameter for adjusting y facing offset
+		front.y = radius * cos(glm::radians(pitch + 90)); //TODO add parameter for adjusting y facing offset
 		front.z = radius * sin(glm::radians(phi))*sin(glm::radians(theta));
 		camfront = glm::normalize(front);
 
@@ -52,16 +54,23 @@ glm::mat4 SHCamera::UpdateCamera(GLFWwindow *window,const glm::vec3 &actor)
 		++FirstRun;
 	}
 	campos.x = actor.x - Xoffset;
-	if (vdist < -3)
-		vdist = -3;
-	campos.y = vdist+4;//TODO add parameter for vertical distance offset
+	/*if (vdist < -10)
+		vdist = -10;*/
+	campos.y = vdist;//TODO add parameter for vertical distance offset
 	campos.z = actor.z - Zoffset;
 	lastX = xpos;
 	lastY = ypos;
-	CurrentView = glm::lookAt(campos, campos + camfront, camup);//Variable to access current view for skybox
+	CurrentView = glm::lookAt(campos, campos+camfront, camup);//Variable to access current view for skybox
+	/////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!camra lookat changed
+	/*glm::vec3 right = glm::normalize(glm::cross(camfront, glm::vec3(0, 1, 0)));
+	camup = glm::normalize(glm::cross(right, camfront));*/
 	return CurrentView;
 }
-glm::mat4 SHCamera::UpdateCamera() { return glm::lookAt(campos, campos + camfront, camup); }
+glm::mat4 SHCamera::UpdateCamera() {
+	
+	
+	return glm::lookAt(campos, campos + camfront, camup); 
+}
 
 glm::vec3 SHCamera::GetCamPos()const
 {
@@ -85,4 +94,8 @@ GLfloat SHCamera::GetYaw() const
 glm::mat4 SHCamera::GetView() const
 {
 	return glm::mat4(glm::mat3(CurrentView));
+}
+GLfloat SHCamera::GetPitch() const
+{
+	return pitch;
 }
