@@ -1,8 +1,6 @@
 #ifndef SHADERS_HPP
 #define SHADERS_HPP
 
-
-
 #include <GL/glew.h>
 
 class Shaders
@@ -13,6 +11,7 @@ class Shaders
 public:
 	
 	Shaders(const GLchar* vertexPath, const GLchar* fragmentPath);
+	Shaders(const GLchar* vertexPath, const GLchar* fragmentPath, const GLchar* tessEvalPath, const GLchar* tessControlPath);
 	void Use();
 	GLuint getProgram();
 };

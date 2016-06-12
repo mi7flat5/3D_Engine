@@ -166,9 +166,14 @@
     <None Include="shaders\3Dfrag.glsl" />
     <None Include="shaders\3Dvert.glsl" />
     <None Include="shaders\frag.glsl" />
+    <None Include="shaders\PassThrough.fs.glsl" />
+    <None Include="shaders\PassThrough.tcs.glsl" />
+    <None Include="shaders\PassThrough.tes.glsl" />
+    <None Include="shaders\PassThrough.vs.glsl" />
     <None Include="shaders\ReflectFrag.glsl" />
     <None Include="shaders\ReflectVert.glsl" />
     <None Include="shaders\RefractFrag.glsl" />
+    <None Include="shaders\SkyModelReflect.glsl" />
     <None Include="shaders\texFrag.glsl" />
     <None Include="shaders\texVert.glsl" />
     <None Include="shaders\vert.glsl" />

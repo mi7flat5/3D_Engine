@@ -15,8 +15,8 @@ class LoadUtility
 	std::vector<Texture> texRecord;
 	GLint TextureFromFile(std::string texpath);
 	GLuint loadCubemap();
-	std::vector<Texture> loadMaterialTextures(aiMaterial * mat, aiTextureType type, std::string typeName);
-	
+	std::vector<Texture> loadMaterialTextures(aiMaterial * mat, aiTextureType type, std::string typeName, MaterialType );
+	bool bNormalsLoaded;
 public:
 	
 	LoadUtility();

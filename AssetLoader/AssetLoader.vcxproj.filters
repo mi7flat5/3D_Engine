@@ -91,6 +91,21 @@
     <None Include="shaders\ReflectVert.glsl">
       <Filter>shaders</Filter>
     </None>
+    <None Include="shaders\SkyModelReflect.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\PassThrough.tcs.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\PassThrough.tes.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\PassThrough.vs.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\PassThrough.fs.glsl">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AssetLoader.rc">
