@@ -8,6 +8,8 @@ in vec3 TanlightPos_FS_in;
 in vec3 TanViewPos_FS_in;
 in vec3 TanFragPos_FS_in;
 
+
+
 struct Material {
     sampler2D texture_diffuse1;
     sampler2D texture_specular1;
@@ -17,6 +19,10 @@ struct Material {
 }; 
 
 uniform Material material;
+uniform bool NormMapping;
+float density = 0.008;
+float LOG2 = 1.442695;
+vec4 fog_color = vec4(0.1, 0.1, 0.1, 0.0);
 
 out vec4 color;
  vec3 Tangent_Normal()
@@ -24,11 +30,11 @@ out vec4 color;
 	vec3 TangNorm = texture(material.texture_normal1,TexCoord_FS_in).rgb;
 	return normalize(TangNorm*2.0-1.0);
 }
-vec3 ViewDirection(){return normalize(TanlightPos_FS_in - TanFragPos_FS_in);}
+vec3 ViewDirection(){return normalize(TanViewPos_FS_in - TanFragPos_FS_in);}
 vec3 Specular_Map()
  {
    
-	float specularStrength = 0.8;
+	float specularStrength = material.shininess;
 	
 	vec3 lightDir = normalize(TanlightPos_FS_in - TanFragPos_FS_in);
 	// ATTENTION 
@@ -51,9 +57,21 @@ vec3 Specular_Map()
 
 void main(void)
 {
+	if (NormMapping)
+	{
 
-    color  = vec4(Diffuse_NormalMap()+Specular_Map(),1.0);
-
+		float z = (WorldPos_FS_in).z;
+		float fogFactor = exp2(-density *density*z*z*LOG2);
+		fogFactor = clamp(fogFactor,0.0,1.0);
+		
+		
+		color = mix(fog_color,vec4(Diffuse_NormalMap()+Specular_Map(),1.0),fogFactor)*0.7f;
+		//color  = vec4(Diffuse_NormalMap()+Specular_Map(),1.0);
+	}
+	else
+	{
+		color = texture(material.texture_diffuse1, TexCoord_FS_in)*0.7f;
+	}
    
        
   

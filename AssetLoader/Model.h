@@ -6,44 +6,50 @@
 #include"LoadUtility.h"
 #include"Shaders.hpp"
 #include"glm-0.9.2.7\glm\glm.hpp"
-
+#include"SHCamera.h"
 
 class Model {
-
-	std::vector<Mesh> meshes;
+protected:
+	GLuint SkyBox;//Move to Cubmap
+	GLuint SkyBoxReflect;//also
 	
-	Shaders* ModelShader;
-	GLuint SkyBox;
-	GLuint SkyBoxReflect;
+	//Needed in all
+	std::vector<Mesh> meshes;
 	GLuint ProjectionMatrixID;
 	GLuint ViewMatrixID;
-	GLint ModelMatrixID;
+	GLuint ModelMatrixID;
+	MeshType ModelMaterial;
+	Shaders* ModelShader;//Has to be set in base class constructor
+
 	GLint lightPosLoc;
-	GLuint Actor;
+
 	GLint viewPosLoc;
 	GLint LC;
-	GLuint ShaderModeLocation;
-	GLuint ShaderMode;
+	GLuint ShaderModeLocation;//remove
+	GLuint ShaderMode;//remove
+	GLuint NormMappingID, DispLevelID, SpecularShininessID; // move to 
+	bool IsNormMapping;
 	glm::vec3 lpos;
 	glm::vec3 lightColor;
 	GLuint DisplacementSamplerID;
 	GLuint bDispMappingID;
-	MaterialType ModelMaterial;
+	glm::vec3 Position;
+	GLfloat DispLevel, Shininess;
 	
-
 public:
-	//determines which shader to load
-	void SetMeshMode(int);
-	static glm::mat4 View;
-	glm::vec3 modelactor;
-	Model(const std::string&);
-	Model(const std::string & InPath, MaterialType);
-	void SetViewMatrix(glm::mat4);
+	//determines which shader to load,loads models and meshes for all subclasses. 
+	Model(const std::string & InPath, MeshType);
 	~Model();
-	void drawModel(glm::vec3&, glm::mat4&, glm::mat4&, glm::mat4 &)const;
-	GLuint GetModelShaderID();
-	void UpdateLightPosition(glm::vec4&);
-	void SetActor(glm::vec3 actor);
+	
+	virtual void Draw(glm::vec3 & campos, glm::mat4 & Model);
+
+	virtual void SetPosition(glm::vec3 InPos);
+
+	virtual void SetScale(glm::mat4 InScale);
+
+	void SetShaders(Shaders *InShader);
+		
+	
 };
 #endif // !MODEL_H
 

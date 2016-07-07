@@ -28,6 +28,7 @@ struct Material {
 uniform vec3 viewPos;
 uniform mat4 Projection, View, Model;
 uniform Material material;
+uniform float DispLevel;
 
 vec2 interpolate2D(vec2 v0, vec2 v1, vec2 v2)
 {
@@ -52,9 +53,9 @@ void main(void)
 	TanFragPos_FS_in = interpolate3D(TanFragPos_ES_in[0], TanFragPos_ES_in[1], TanFragPos_ES_in[2]);
 	WorldPos_FS_in = interpolate3D(WorldPos_ES_in[0], WorldPos_ES_in[1], WorldPos_ES_in[2]);
 
-	float Displacement = texture(material.texture_displacement1, TexCoord_FS_in).r;
+	float Displacement = texture(material.texture_displacement1, TexCoord_FS_in).r*DispLevel;
 	//Displacement += noise1(viewPos.x*viewPos.z)*10;
-   	WorldPos_FS_in +=Normal_FS_in* Displacement *1.2;
+   	WorldPos_FS_in +=Normal_FS_in* Displacement ;
    	gl_Position = Projection * vec4(WorldPos_FS_in, 1.0);
 	
 	

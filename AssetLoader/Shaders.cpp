@@ -1,15 +1,10 @@
-
-
-
 #include "Shaders.hpp"
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <GL/glew.h>
-	
-	// Constructor generates the shader on the fly
-
+	// Constructor generates the shader
 Shaders::Shaders(const GLchar* vertexPath, const GLchar* fragmentPath)
 	{
 		// 1. Retrieve the vertex/fragment source code from filePath
@@ -83,7 +78,6 @@ Shaders::Shaders(const GLchar* vertexPath, const GLchar* fragmentPath)
 		// Delete the shaders as they're linked into our program now and no longer necessery
 		glDeleteShader(vertex);
 		glDeleteShader(fragment);
-
 }
 Shaders::Shaders(const GLchar * vertexPath, const GLchar * tessControlPath, const GLchar * tessEvalPath, const GLchar * fragmentPath)
 {
@@ -184,12 +178,6 @@ Shaders::Shaders(const GLchar * vertexPath, const GLchar * tessControlPath, cons
 		std::cout << "ERROR::SHADER::TESSELEATION_EVALUATION::COMPILATION_FAILED\n" << infoLog << std::endl;
 	}
 
-
-
-
-
-
-
 	// Shader Program
 	this->Program = glCreateProgram();
 	glAttachShader(this->Program, vertex);
@@ -209,7 +197,6 @@ Shaders::Shaders(const GLchar * vertexPath, const GLchar * tessControlPath, cons
 	glDeleteShader(fragment);
 	glDeleteShader(TCS);
 	glDeleteShader(TES);
-
 }
 // Uses the current shader
 void Shaders::Use()

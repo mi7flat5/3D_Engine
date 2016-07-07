@@ -39,6 +39,24 @@
     <ClCompile Include="SHCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Actor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Control.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mesh.h">
@@ -60,6 +78,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeMap.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Actor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Control.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticVariables.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -104,6 +143,24 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="shaders\PassThrough.fs.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\dispmap.fs.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\dispmap.tcs.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\dispmap.tes.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\dispmap.vs.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\ColliderFrag.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\ColliderVert.glsl">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

@@ -71,8 +71,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\DDocs\Visual Studio 2015\Projects\AssetLoader\AssetLoader\include\SOIL;D:\DDocs\Visual Studio 2015\Projects\AssetLoader\AssetLoader\glm-0.9.2.7\glm;C:\GLFW\glfw-3.1.2\include;D:\DDocs\Visual Studio 2015\Projects\AssetLoader\AssetLoader\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\DDocs\Visual Studio 2015\Projects\AssetLoader\AssetLoader\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>F:\LibJpgx86\libjpeg-turbo\include;D:\DDocs\Visual Studio 2015\Projects\AssetLoader\AssetLoader\include\SOIL;D:\DDocs\Visual Studio 2015\Projects\AssetLoader\AssetLoader\glm-0.9.2.7\glm;C:\GLFW\glfw-3.1.2\include;D:\DDocs\Visual Studio 2015\Projects\AssetLoader\AssetLoader\include;$(IncludePath)</IncludePath>
+    <LibraryPath>F:\LibJpgx86\libjpeg-turbo\lib;D:\DDocs\Visual Studio 2015\Projects\AssetLoader\AssetLoader\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -94,7 +94,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>assimpd.lib;glew32.lib;SOIL.lib;glfw3.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimpd.lib;glew32.lib;SOIL.lib;glfw3.lib;glut32.lib;jpeg-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -145,26 +145,45 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="Collider.cpp" />
+    <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Control.cpp" />
+    <ClCompile Include="CubeMap.cpp" />
     <ClCompile Include="SHCamera.cpp" />
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="LoadUtility.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Shaders.cpp" />
+    <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Actor.hpp" />
+    <ClInclude Include="Collider.hpp" />
+    <ClInclude Include="Collision.hpp" />
+    <ClInclude Include="Control.hpp" />
+    <ClInclude Include="CubeMap.hpp" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SHCamera.h" />
     <ClInclude Include="LoadUtility.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Shaders.hpp" />
+    <ClInclude Include="StaticVariables.h" />
+    <ClInclude Include="Terrain.hpp" />
     <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\3Dfrag.glsl" />
     <None Include="shaders\3Dvert.glsl" />
+    <None Include="shaders\ColliderFrag.glsl" />
+    <None Include="shaders\ColliderVert.glsl" />
+    <None Include="shaders\dispmap.fs.glsl" />
+    <None Include="shaders\dispmap.tcs.glsl" />
+    <None Include="shaders\dispmap.tes.glsl" />
+    <None Include="shaders\dispmap.vs.glsl" />
     <None Include="shaders\frag.glsl" />
     <None Include="shaders\PassThrough.fs.glsl" />
     <None Include="shaders\PassThrough.tcs.glsl" />

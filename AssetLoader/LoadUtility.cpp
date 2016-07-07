@@ -1,16 +1,24 @@
 #include "LoadUtility.h"
 #include<SOIL.h>
+#include<fstream>
+#include<sstream>
+#include<jpeglib.h>
+#include<algorithm>
+#include<map>
 
-LoadUtility::LoadUtility() { bNormalsLoaded = false; }
+LoadUtility::LoadUtility() {  }
 LoadUtility::~LoadUtility(){}
 
-void LoadUtility::loadModel( std::vector<Mesh> &InMeshVec,const std::string &path,MaterialType TextureType)
+
+void LoadUtility::loadModel( std::vector<Mesh> &InMeshVec,const std::string &path,MeshType TextureType)
 {
+	std::vector<Mesh> meshes;
+	std::vector<Texture> texRecord;
 	std::vector<Vertex>verts;
 	std::vector<GLuint>indices;
 	std::vector<Texture> textures;
 	Assimp::Importer importer;
-
+	bool bNormalsLoaded = false;
 	const aiScene *scene = importer.ReadFile(path,
 		aiProcess_CalcTangentSpace |
 		aiProcess_Triangulate |
@@ -23,13 +31,10 @@ void LoadUtility::loadModel( std::vector<Mesh> &InMeshVec,const std::string &pat
 		std::cout << "\nFailed to load! ";
 		return;
 	}
-
-	
+		
 	for (GLuint i = 0;i <scene->mNumMeshes;++i)
 	{
-		
 		aiMesh* tmpMesh = scene->mMeshes[(scene->mNumMeshes - 1) - i];
-		aiFace  tmpFace;
 		for (int j = 0;j < tmpMesh->mNumVertices;++j)
 		{
 			Vertex tmpVert;
@@ -37,8 +42,7 @@ void LoadUtility::loadModel( std::vector<Mesh> &InMeshVec,const std::string &pat
 			tmpPos.x = tmpMesh->mVertices[j].x;
 			tmpPos.y = tmpMesh->mVertices[j].y;
 			tmpPos.z = tmpMesh->mVertices[j].z;
-			if (TextureType == MaterialType::TEXTURE_2D_DISPLACEMENT)
-				std::cout <<"\n"<< tmpPos.x<<"," << tmpPos.y << ", " << tmpPos.z;;
+			std::cout;
 			
 			glm::vec3 tmpNorm;
 			if (tmpMesh->HasNormals())
@@ -74,7 +78,7 @@ void LoadUtility::loadModel( std::vector<Mesh> &InMeshVec,const std::string &pat
 			tmpVert.Tangent = tmpTang;
 			tmpVert.BitTangent = tmpBitTang;
 
-			if (tmpMesh->mTextureCoords[0] && TextureType != MaterialType::TEXTURE_3D)
+			if (tmpMesh->mTextureCoords[0] && TextureType != MeshType::SKYBOX)
 			{
 				tmpVert.texCoord.x = tmpMesh->mTextureCoords[0][j].x;
 				tmpVert.texCoord.y = tmpMesh->mTextureCoords[0][j].y;
@@ -88,6 +92,7 @@ void LoadUtility::loadModel( std::vector<Mesh> &InMeshVec,const std::string &pat
 			verts.push_back(tmpVert);
 
 		}
+		aiFace  tmpFace;
 		for (int j = 0; j < tmpMesh->mNumFaces;++j)
 		{
 			tmpFace = tmpMesh->mFaces[j];
@@ -96,7 +101,7 @@ void LoadUtility::loadModel( std::vector<Mesh> &InMeshVec,const std::string &pat
 				indices.push_back(tmpFace.mIndices[k]);
 			}
 		}
-		if (tmpMesh->mMaterialIndex >= 0&&TextureType!=MaterialType::TEXTURE_3D)
+		if (tmpMesh->mMaterialIndex >= 0&&TextureType!=MeshType::SKYBOX)
 		{
 			aiMaterial* material = scene->mMaterials[tmpMesh->mMaterialIndex];
 			// We assume a convention for sampler names in the shaders. Each diffuse texture should be named
@@ -108,26 +113,28 @@ void LoadUtility::loadModel( std::vector<Mesh> &InMeshVec,const std::string &pat
 			// Displacement map, heightmap, depthmap etc. 
 
 			// 1. Diffuse maps
-			std::vector<Texture> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "material.texture_diffuse",TextureType);
+			std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "material.texture_diffuse",TextureType, texRecord, bNormalsLoaded);
 			textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 			// 2. Specular maps
-			std::vector<Texture> specularMaps = this->loadMaterialTextures(material, aiTextureType_SPECULAR, "material.texture_specular", TextureType);
+			std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "material.texture_specular", TextureType, texRecord, bNormalsLoaded);
 			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 			// 3. Normal maps ATTENTION! aiTextureType_NORMAL may work with fbx, aiTexturType_HEIGHT may be an option
-			std::vector<Texture> normalMaps = this->loadMaterialTextures(material, aiTextureType_NORMALS, "material.texture_normal", TextureType);
+			std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "material.texture_normal", TextureType, texRecord, bNormalsLoaded);
 			textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+			
 			bNormalsLoaded = true;
+			
 			// 4. Displacement maps
 			//hack because blender and/or assimp does not export/import displacement maps in fbx 
 			
-			if (TextureType == MaterialType::TEXTURE_2D_DISPLACEMENT)
+			if (TextureType == MeshType::TEXTURE_2D_DISPLACEMENT||TextureType== MeshType::TERRAIN)
 			{
-				std::vector<Texture> displacementMaps = this->loadMaterialTextures(material, aiTextureType_NORMALS, "material.texture_displacement", TextureType);
+				std::vector<Texture> displacementMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "material.texture_displacement", TextureType,texRecord, bNormalsLoaded);
 				textures.insert(textures.end(), displacementMaps.begin(), displacementMaps.end());
 			}
-			std::cout << "\n" << material->mProperties[i]->mType;
+			
 		}
-		if (TextureType == MaterialType::TEXTURE_3D)//TODO Add reflecive environment cubmap option here
+		if (TextureType == MeshType::SKYBOX || TextureType == MeshType::ENVIRONMENT_MAP)
 		{
 			textures.clear();
 			textures.push_back(Texture());
@@ -142,31 +149,31 @@ void LoadUtility::loadModel( std::vector<Mesh> &InMeshVec,const std::string &pat
 		indices.clear();
 		textures.clear();
 	}
-	
-
 }
-
-std::vector<Texture> LoadUtility::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, MaterialType TextureType)
+std::vector<Texture> LoadUtility::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, MeshType TextureType, std::vector<Texture> &texRecord, bool bNormalsLoaded)
 {
 	std::vector<Texture> textures;
+	
 	for (GLuint i = 0; i < mat->GetTextureCount(type); i++)
 	{
 		aiString str;
 		
 		mat->GetTexture(type, i, &str);
 		std::string tmpTexPath = str.C_Str();
-		std::cout << "\n material type file: " << tmpTexPath;
+		
 		// Check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
 		//Hack for displacement maps continues, normalmap must have "_n" at end of name, and displacement map must be the same name with
 		// "_d" at the end of filename
-		if (TextureType == MaterialType::TEXTURE_2D_DISPLACEMENT && bNormalsLoaded)
+		if ((TextureType == MeshType::TEXTURE_2D_DISPLACEMENT || TextureType == MeshType::TERRAIN) && bNormalsLoaded)
 		{
 			std::string key("_n");
 			std::size_t found = tmpTexPath.rfind(key);
 			if (found != std::string::npos)
 				tmpTexPath.replace(found, key.length(), "_d");
 			typeName = "material.texture_displacement";
-
+			//ATTENTION
+			if (TextureType == MeshType::TERRAIN)
+				tmpTexPath = "media/hm_d.png";
 		}
 		GLboolean skip = false;
 		for (GLuint j = 0; j < texRecord.size(); j++)
@@ -185,7 +192,7 @@ std::vector<Texture> LoadUtility::loadMaterialTextures(aiMaterial* mat, aiTextur
 			texture.type = typeName;
 			texture.texPath = tmpTexPath;
 			textures.push_back(texture);
-			this->texRecord.push_back(texture);  // Store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
+			texRecord.push_back(texture);  // Store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
 		}
 	}
 	return textures;
@@ -197,33 +204,33 @@ GLint LoadUtility::TextureFromFile(std::string texpath) //TODO Add exception for
 	std::string FileName = texpath.substr(found + 1);
 	
 	//Generate texture ID and load texture data 
-	GLuint textureID;
-	glGenTextures(1, &textureID);
+	GLuint TexID;
+	glGenTextures(1, &TexID);
 	int width, height;
 	FileName = "media/" + FileName;
 	unsigned char* image = SOIL_load_image(FileName.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
-																								// Assign texture to ID
-	glBindTexture(GL_TEXTURE_2D, textureID);
+	// Assign texture to ID
+	glBindTexture(GL_TEXTURE_2D, TexID);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	// Parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	
 	glBindTexture(GL_TEXTURE_2D, 0);
 	
 	std::cout << "\nTexture Loaded: " + FileName;
 	SOIL_free_image_data(image);
 	
-	return textureID;
+	return TexID;
 }
 GLuint LoadUtility::loadCubemap()
 {
-	
-	GLuint textureID;
-	glGenTextures(1, &textureID);
+	GLuint TexID;
+	glGenTextures(1, &TexID);
 	glActiveTexture(GL_TEXTURE0);
 
 	std::vector<const GLchar*> faces;
@@ -237,7 +244,7 @@ GLuint LoadUtility::loadCubemap()
 	int width, height;
 	unsigned char* image;
 
-	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, TexID);
 	for (GLuint i = 0; i < faces.size(); i++)
 	{
 		image = SOIL_load_image(faces[i], &width, &height, 0, SOIL_LOAD_RGB);
@@ -255,5 +262,86 @@ GLuint LoadUtility::loadCubemap()
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	
-	return textureID;
+	return TexID;
+}
+//Returns height values in multi dimesional vector/array for client side access to terrain height, slows load time
+void LoadUtility::loadHeightMap(std::string Path, int &Width, int &Height, std::vector< std::vector<GLfloat> > &InVec)
+{
+	unsigned char* image = nullptr;
+	
+	image = SOIL_load_image(Path.c_str(), &Width, &Height, 0, SOIL_LOAD_RGB);
+	
+	if (!image)
+	{
+		std::cout << "'\nFailed to load heightmap pixel data.";
+	}
+	else {
+		InVec = std::vector< std::vector<GLfloat> >(Width, std::vector<GLfloat>(Height));
+		GLuint k = 0;
+		for (GLuint i = 0; i < Width; i++) {
+			for (GLuint j = 0; j < Height; j++) {
+
+				InVec[j][i] = (GLdouble)image[k * 3] / 255;
+				k++;
+			}
+		}
+		SOIL_free_image_data(image);
+	}
+}
+unsigned char* LoadUtility::loadHeightMap(std::string Path, int &Width, int &Height) {
+	unsigned char* image = nullptr;
+	GLuint k = 0;
+	image = SOIL_load_image(Path.c_str(), &Width, &Height, 0, SOIL_LOAD_RGB);
+	if (!image)
+	{
+		std::cout << "'\nFailed to load heightmap pixel data.";
+		return nullptr;
+	}
+	return image;
+}
+void LoadUtility::LoadCollider(const std::string &path, std::vector<glm::vec3> &InVerts, std::vector<GLuint> &InIndices, std::vector<glm::vec3> &InRenderVerts) {
+
+	Assimp::Importer importer;
+	const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate);
+	if (!scene)
+	{
+		std::cout << "\nFile " << path << " Not found.";
+		return;
+	}
+	std::map<aiVector3D, int>VertMap;
+	aiMesh* tmpMesh = scene->mMeshes[0];
+	
+	for (int j = 0;j < tmpMesh->mNumVertices;++j)
+	{
+		glm::vec3 tmpPos;
+		tmpPos.x = tmpMesh->mVertices[j].x;
+		tmpPos.y = tmpMesh->mVertices[j].y;
+		tmpPos.z = tmpMesh->mVertices[j].z;
+			InRenderVerts.push_back(tmpPos);
+	}
+	aiFace  tmpFace;
+	for (int j = 0; j < tmpMesh->mNumFaces;++j)
+	{
+		tmpFace = tmpMesh->mFaces[j];
+		for (int k = 0;k < tmpFace.mNumIndices;++k)
+		{
+			InIndices.push_back(tmpFace.mIndices[k]);
+		}
+	}
+	//assimp duplicates vertices so I have to use a map to weed out duplicates
+	for (int j = 0;j < tmpMesh->mNumVertices;++j)
+	{
+		VertMap[tmpMesh->mVertices[j]] = j;
+	}
+	typedef std::map<aiVector3D, int>::iterator it_type;
+
+	for (it_type iterator = VertMap.begin(); iterator != VertMap.end(); iterator++)
+	{
+		//std::map cannot sort glm::vec3 so i leave it in assimp's vector3D and convert here
+		glm::vec3 tmpPos;
+		tmpPos.x = iterator->first.x;
+		tmpPos.y = iterator->first.y;
+		tmpPos.z = iterator->first.z;
+		InVerts.push_back(tmpPos);
+	}
 }

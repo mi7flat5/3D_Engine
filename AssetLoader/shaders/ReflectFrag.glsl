@@ -18,7 +18,7 @@ void main()//Reflection fragment shader
   vec3 Reflection = reflect (I, norm);
 
   // convert from eye to world space 
-  Reflection = vec3 (inverse (View) * vec4 (Reflection, 0.0));
+  Reflection = vec3 (inverse(View) * vec4 (Reflection, 0.0));
 
 
   if (water)

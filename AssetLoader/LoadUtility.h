@@ -1,6 +1,7 @@
-#pragma once
-#include"Mesh.h"
+#ifndef LOADUTILITY_H
+#define LOADUTILITY_H
 
+#include"Mesh.h"
 #include<vector>
 #include"include\assimp\Importer.hpp"
 #include "include\assimp\scene.h"        
@@ -9,19 +10,22 @@
 #include<gtc/matrix_transform.hpp>
 #include<gtc/type_ptr.hpp>
 #include<iostream>
+
 class LoadUtility
 {
-	std::vector<Mesh> meshes;
-	std::vector<Texture> texRecord;
-	GLint TextureFromFile(std::string texpath);
-	GLuint loadCubemap();
-	std::vector<Texture> loadMaterialTextures(aiMaterial * mat, aiTextureType type, std::string typeName, MaterialType );
-	bool bNormalsLoaded;
+	
+	static GLint TextureFromFile(std::string texpath);
+	static GLuint loadCubemap();
+	static std::vector<Texture> loadMaterialTextures(aiMaterial * mat, aiTextureType type, std::string typeName, MeshType, std::vector<Texture>&, bool );
+
 public:
 	
 	LoadUtility();
 	~LoadUtility();
-	
-	void loadModel(std::vector<Mesh> &InMeshVec,const std::string&,MaterialType);
+	static void loadHeightMap(std::string,int&,int&, std::vector< std::vector<GLfloat> >&);
+	static unsigned char * loadHeightMap(std::string Path, int & Width, int & Height);
+	static void LoadCollider(const std::string &path,std::vector<glm::vec3>& InVerts, std::vector<GLuint>& InIndices,std::vector<glm::vec3> &InRenderVerts);
+	static void loadModel(std::vector<Mesh> &InMeshVec,const std::string&,MeshType);
 };
 
+#endif // !LOADUTILITY_H
