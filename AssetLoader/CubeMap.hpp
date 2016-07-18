@@ -7,6 +7,7 @@ class CubeMap : public Model {
 
 public:
 	CubeMap(const std::string &InPath, MeshType shader);
+	CubeMap(MeshType shader);
 	void Draw()const ;
 };
 #endif // !CUBEMAP_HPP

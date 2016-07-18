@@ -57,15 +57,4 @@ void main(void)
 	//Displacement += noise1(viewPos.x*viewPos.z)*10;
    	WorldPos_FS_in +=Normal_FS_in* Displacement ;
    	gl_Position = Projection * vec4(WorldPos_FS_in, 1.0);
-	
-	
-	
-	
-	
-	
-	//m
-
-    
-
-
 }

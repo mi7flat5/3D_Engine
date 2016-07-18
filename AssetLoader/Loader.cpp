@@ -15,8 +15,8 @@
 #include"StaticVariables.h"
 
 GLFWwindow* initialize();
-GLuint WIDTH = 1200;
-GLuint HEIGHT = 1600;
+GLuint WIDTH = 600;
+GLuint HEIGHT = 800;
 GLfloat fov = 90.0f;
 
 int main() { 
@@ -25,41 +25,46 @@ int main() {
 	GLFWwindow* window = initialize();
 	if (!window)
 		return -1;
-	Collider test("assets/CollideBox.fbx");
-	Collider test2("assets/CollideBox.fbx");
+
 	Collision tester;
-	CubeMap Sky("assets/box.fbx", MeshType::SKYBOX);
+	Collider test("assets/ColliderBox.obj");
+	Collider test2("assets/box.fbx");
+	
+	
+	CubeMap Sky(MeshType::SKYBOX);
 	Terrain Ground("assets/ParisTerrain.fbx", MeshType::TERRAIN);
 	Actor Character("assets/GrossFace.fbx", MeshType::TEXTURE_2D_REFLECT, &cam, &Ground, &test);
-	Actor arrow("assets/arrow.fbx", MeshType::TEXTURE_2D_REFLECT, &cam, &Ground, &test2);
-	arrow.SetPosition(glm::vec3(0,5,-15));
-	arrow.SetTransforms(Transform::translate(0,5,0)*Transform::scale(10,10,10));
+	Actor arrow("assets/sphere.fbx", MeshType::TEXTURE_2D_REFLECT, &cam, &Ground, &test2);
 	
 	
-	Model Pave("assets/ground_d.fbx", MeshType::TEXTURE_2D_DISPLACEMENT);
-	Model FTargetLoc("assets/arrow.fbx", MeshType::NO_TEXTURE);
-	SHCamera::Projection = glm::perspective(fov, (float)HEIGHT / WIDTH, 0.1f, 1800.0f);
+	arrow.SetTransforms(Transform::scale(20,20,20));
+	arrow.SetPosition(glm::vec3(-30,15,-30));
+	Character.SetPosition(glm::vec3(30,15,30));
+		
+	arrow.Draw();
+	Character.Draw();
 	Control control(window,&Character,&cam);
-	cam.SetHome(arrow.GetPosition());
+	
+	SHCamera::Projection = glm::perspective(fov, (float)HEIGHT / WIDTH, 0.1f, 1800.0f);
 	while (!glfwWindowShouldClose(window)) 
 		{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glfwPollEvents();
+			control.UpdateControls();
+
 			
-			//Cubemap			
-			Sky.Draw();
-						
-			//Pave.Draw(cam.GetCamPos(), Transform::translate(0, 13, 0)*Transform::scale(430, 100, 430));
+		
+			if (tester.IsCollision(test, test2))
+			{
+
+				Character.CorrectCollision(tester.GetCollisionNormal(), tester.GetPenetrationDepth());
+				//arrow.CorrectCollision(-tester.GetCollisionNormal(), tester.GetPenetrationDepth());
+				VECCONSOLEOUT(Character.GetPosition(),"Char Position :")
+			}
 			
-			//Terrain
-			Ground.Draw();
-			
-			//FTargetLoc.Draw(cam.GetCamPos(), 
-			//	Transform::translate(Character.GetTargetPosition().x, Character.GetTargetPosition().y+5, Character.GetTargetPosition().z)
-			//	*glm::rotate(glm::mat4(),cam.GetYaw(),cam.GetCamUp())/*Transform::scale(5.0,5.0,5.0)*/);
-			test.Draw();
-			test2.Draw();
-			Character.Draw();
-			arrow.Draw();
+		
+		
+
 			static double timepassed;
 			double seconds = glfwGetTime();
 			if (seconds - timepassed > 0.009) {
@@ -69,14 +74,23 @@ int main() {
 					control.SetPawn(&Character);
 			}
 			timepassed = glfwGetTime();
+						
+			Sky.Draw();
+			Ground.Draw();
+			Character.Draw();
+			arrow.Draw();
+			test.Draw();
+			test2.Draw();
 			
-			if (tester.IsCollision(test, test2))
-				std::cout << "\nCollision detected";
-			control.UpdateControls();
-			glfwPollEvents();
-			glfwSwapBuffers(window);
-		}
 		
+			
+			
+		
+			glfwSwapBuffers(window);
+				
+		
+		}
+
 	glfwTerminate();
 	
 	return 0; 

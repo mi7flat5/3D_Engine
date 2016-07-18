@@ -5,7 +5,6 @@ void Control::scroll_callback(GLFWwindow* Window, double xoffset, double yoffset
 	if (SHCamera::radius >= 2.0f && SHCamera::radius <= 200.0f)
 	{
 		SHCamera::radius += yoffset;
-		
 	}
 	else if (SHCamera::radius > 2.0f)
 		SHCamera::radius -= yoffset;
@@ -17,6 +16,7 @@ void Control::key_callback(GLFWwindow* Window, int key, int scancode, int action
 {
 	static double timepassed;
 	double seconds = glfwGetTime();
+	GLint Spacestate = glfwGetKey(Window, GLFW_KEY_SPACE);
 	if (seconds - timepassed > 0.15) {
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 			glfwSetWindowShouldClose(Window, GL_TRUE);
@@ -26,6 +26,7 @@ void Control::key_callback(GLFWwindow* Window, int key, int scancode, int action
 		}
 		if (key == GLFW_KEY_SPACE&& action == GLFW_PRESS)
 			Pawn->Jump(true);
+		else if (Spacestate == GLFW_RELEASE) Pawn->Jump(false);
 	}
 	timepassed = glfwGetTime();
 }
@@ -38,6 +39,7 @@ Control::Control(GLFWwindow *InWindow, Actor *InPawn, SHCamera *InCamera)
 	
 	glfwSetScrollCallback(Window, Control::scroll_callback);
 	glfwSetKeyCallback(Window, Control::key_callback);
+	glfwSetInputMode(Window, GLFW_STICKY_KEYS, 1);
 }
 void Control::SetWindow(GLFWwindow *InWin)
 {
@@ -53,9 +55,7 @@ void Control::SetPawn(Actor * InPawn)
 			Control::Pawn->SetCameraState(false);
 			Control::Pawn = InPawn;
 			Control::Pawn->SetCameraState(true);
-			
 		}
-
 	}
 }
 
@@ -102,7 +102,7 @@ void Control::UpdateControls() {
 	double xpos, ypos;
 	glfwGetCursorPos(Window, &xpos, &ypos);
 	
-	if (glfwGetMouseButton(Window, GLFW_MOUSE_BUTTON_LEFT) || glfwGetMouseButton(Window, GLFW_MOUSE_BUTTON_RIGHT))
+	if (glfwGetMouseButton(Window, GLFW_MOUSE_BUTTON_LEFT))
 	{
 
 		GLfloat xoffset = lastX - xpos;
@@ -117,7 +117,30 @@ void Control::UpdateControls() {
 		Control::Camera->SetYaw(xoffset);
 		Control::Camera->SetPitch(yoffset);
 	}
+	if (glfwGetMouseButton(Window, GLFW_MOUSE_BUTTON_RIGHT))
+	{
+
+		GLfloat xoffset = lastX - xpos;
+		GLfloat yoffset = ypos - lastY;
+		lastX = xpos;
+		lastY = ypos;
+
+		GLfloat sensitivity = 0.7;	// TODO make variable for sensitivity
+		xoffset *= sensitivity;
+		yoffset *= sensitivity;
+
+		Control::Camera->SetYaw(xoffset);
+		Control::Camera->SetPitch(yoffset);
+		Pawn->SetCamRotate(false);
+	}
+	else Pawn->SetCamRotate(true);
+
 	lastX = xpos;
 	lastY = ypos;
+	
+	if (glfwGetMouseButton(Window, GLFW_MOUSE_BUTTON_LEFT) && glfwGetMouseButton(Window, GLFW_MOUSE_BUTTON_RIGHT))
+	{
+		Pawn->MoveForward(rate);
+	}
 }
 

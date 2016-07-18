@@ -1,6 +1,6 @@
 #include "CubeMap.hpp"
 
-CubeMap::CubeMap(const std::string & InPath, MeshType shader):Model(InPath,shader)
+CubeMap::CubeMap(MeshType shader):Model("assets/box.fbx",shader)
 {
 	bIsDrawn = true;
 	SkyBox = glGetUniformLocation(ModelShader->getProgram(), "SkyBox");

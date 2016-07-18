@@ -24,13 +24,23 @@ SHCamera::SHCamera (GLuint Width,GLuint Height) : pitch(15),
 	UpdateOffsetsVectors();
 	TerrainHeight = 50;
 	Target = glm::vec3(0, 21, 0);
+
+
+
 }
 SHCamera::~SHCamera(){}
+
+
+
 void SHCamera::SwithTarget() {
-	if (TargSelect)
-		TargSelect = false;
-	else  TargSelect = true;
-	Moving = true;
+	if (!Moving)
+	{
+		if (TargSelect)
+			TargSelect = false;
+		else  TargSelect = true;
+		Moving = true;
+	}
+	
 }
 bool SHCamera::IsMoving() { return Moving; }
 glm::mat4 SHCamera::UpdateCamera(glm::vec3 &actor)
@@ -67,8 +77,8 @@ glm::mat4 SHCamera::UpdateCamera(glm::vec3 &actor)
 	NewCampos.x = Target.x - Xoffset;
 	NewCampos.z = Target.z - Zoffset;
 	campos.x = NewCampos.x;
+	campos.y = Transform::Lerp(campos.y, NewCampos.y, .30);
 	campos.z = NewCampos.z;
-	campos.y = Transform::Lerp(campos.y,NewCampos.y,.30);
 	SHCamera::View = glm::lookAt(campos, campos + camfront, camup);
 	
 	return SHCamera::View;
@@ -117,7 +127,7 @@ glm::vec3 SHCamera::MovePosition(glm::vec3 Start, glm::vec3 end) {
 		Time = 0;
 		return end;
 	}
-	else return Current;
+	return Current;
 }
 glm::vec3 SHCamera::MovePositionReverse(glm::vec3 Start, glm::vec3 end) {
 
@@ -144,7 +154,7 @@ glm::vec3 SHCamera::MovePositionReverse(glm::vec3 Start, glm::vec3 end) {
 		Time = 100;
 		return Start;
 	}
-	else return Current;
+	return Current;
 }
 void SHCamera::SetYaw(GLfloat InYaw) {
 	yaw += InYaw;

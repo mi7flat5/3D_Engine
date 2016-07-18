@@ -72,7 +72,4 @@ void main(void)
 	{
 		color = texture(material.texture_diffuse1, TexCoord_FS_in)*0.7f;
 	}
-   
-       
-  
 }

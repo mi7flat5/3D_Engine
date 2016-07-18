@@ -16,13 +16,19 @@ class Collider
 	GLuint  VAO, VBO,EBO, ProjectionMatrixID, ViewMatrixID, ModelMatrixID;
 	Shaders * ModelShader;
 	
+
+	
+	
 public:
 	int PointsInCollider();
 	void SetModelMatrix(glm::mat4);
 	Collider(const std::string& );
+	Collider();
 	virtual ~Collider();
 	void Draw() ;
-	glm::vec3 GetFurthestPoint(const glm::vec3 & DirectionVector) const;
+	glm::mat4 GetColliderMatrix()const;
+	
+	 glm::vec3 GetFurthestPoint(const glm::vec3 & DirectionVector);
 	
 };
 

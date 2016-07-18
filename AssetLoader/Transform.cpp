@@ -178,5 +178,22 @@ glm::vec3 Transform::VecLerp(glm::vec3 Start, glm::vec3 End, GLfloat Percent) {
 
 	return Current;
 }
+// Compute barycentric coordinates (u, v, w) for
+// point p with respect to triangle (a, b, c)
+glm::vec3 Transform::Barycentric(glm::vec3 PointOnTriangle, glm::vec3 PointA, glm::vec3 PointB, glm::vec3 PointC)
+{
+	glm::vec3 AB = PointB - PointA, AC = PointC - PointA, v2 = PointOnTriangle - PointA;
+	GLfloat d00 = glm::dot(AB, AB);
+	GLfloat d01 = glm::dot(AB, AC);
+	GLfloat d11 = glm::dot(AC, AC);
+	GLfloat d20 = glm::dot(v2, AB);
+	GLfloat d21 = glm::dot(v2, AC);
+	GLfloat denom = d00 * d11 - d01 * d01;
+	GLfloat V = (d11 * d20 - d01 * d21) / denom;
+	GLfloat W = (d00 * d21 - d01 * d20) / denom;
+	GLfloat U = 1.0f - V - W;
+	glm::vec3 BaryVector = glm::vec3(U, V, W);
+	return BaryVector;
+}
 Transform::Transform(){}
 Transform::~Transform(){}

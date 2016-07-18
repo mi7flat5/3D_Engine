@@ -171,9 +171,7 @@ std::vector<Texture> LoadUtility::loadMaterialTextures(aiMaterial* mat, aiTextur
 			if (found != std::string::npos)
 				tmpTexPath.replace(found, key.length(), "_d");
 			typeName = "material.texture_displacement";
-			//ATTENTION
-			if (TextureType == MeshType::TERRAIN)
-				tmpTexPath = "media/hm_d.png";
+			
 		}
 		GLboolean skip = false;
 		for (GLuint j = 0; j < texRecord.size(); j++)
@@ -302,7 +300,7 @@ unsigned char* LoadUtility::loadHeightMap(std::string Path, int &Width, int &Hei
 void LoadUtility::LoadCollider(const std::string &path, std::vector<glm::vec3> &InVerts, std::vector<GLuint> &InIndices, std::vector<glm::vec3> &InRenderVerts) {
 
 	Assimp::Importer importer;
-	const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate);
+	const aiScene *scene = importer.ReadFile(path,0);
 	if (!scene)
 	{
 		std::cout << "\nFile " << path << " Not found.";
@@ -344,4 +342,5 @@ void LoadUtility::LoadCollider(const std::string &path, std::vector<glm::vec3> &
 		tmpPos.z = iterator->first.z;
 		InVerts.push_back(tmpPos);
 	}
+	std::cout << "\inverts size: " << InVerts.size();
 }

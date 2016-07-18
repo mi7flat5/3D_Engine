@@ -8,39 +8,22 @@
 
 class SHCamera
 {
-	GLfloat Xoffset;
-	GLfloat Zoffset;
-	
-	GLfloat vdist;
-	GLfloat hdist;
-	
-	GLfloat yaw;
-	GLfloat pitch;
-	GLfloat theta;
-	GLfloat phi;
-	
+	GLfloat Xoffset, Zoffset, vdist, hdist;
+	GLfloat yaw, pitch, theta, phi;
 	GLfloat TerrainHeight;
-
 	GLfloat FieldOfView;
-
+	
 	GLuint WIDTH, HEIGHT;
 	
-
-	glm::vec3 front;
-	glm::vec3 campos;
-	glm::vec3 camfront;
-	glm::vec3 camup;
-
+	glm::vec3 front, campos, camfront, camup, Right,Target,Home;
+	
 	glm::mat4 CurrentView;
-	glm::vec3 Right;
-
-	glm::vec3 Home;
+	
 	void SHCamera::UpdateOffsetsVectors();
 		
 	bool TargSelect;
-	GLfloat lastFrame;
-	glm::vec3 Target;
 	bool Moving;
+
 public:
 	
 	static GLfloat radius;
@@ -48,6 +31,7 @@ public:
 	glm::vec3 MovePositionReverse(glm::vec3 Start, glm::vec3 end);
 	SHCamera(GLuint Width, GLuint Height);
 	~SHCamera();
+	
 	void SwithTarget();
 	bool IsMoving();
 	glm::mat4 UpdateCamera(  glm::vec3&);

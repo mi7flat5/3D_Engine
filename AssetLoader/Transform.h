@@ -7,7 +7,7 @@
 #include<GL/glew.h>
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
-
+#include <limits>
 // glm provides vector, matrix classes like glsl
 // Typedefs to make code more readable 
 
@@ -20,8 +20,26 @@ const float pi = 3.14159265 ; // For portability across platforms
 class Transform  
 {
 public:
+	
 	Transform();
 	virtual ~Transform();
+
+	template<typename T>static
+	bool is_infinite(const T &value) {
+		T max_value = (std::numeric_limits<T>::max)();
+		T min_value = -max_value;
+		return !(min_value <= value && value <= max_value);
+	}
+	template<typename T>static
+	bool is_nan(const T &value) {
+		// True if NAN
+		return value != value;
+	}
+	template<typename T>static
+	bool is_valid(const T &value) {
+		return !is_infinite(value) && !is_nan(value);
+	}
+
 	template<typename T>static T Clamp(T x, T Min, T Max) {
 		if (x < Min)
 			x = Min;
@@ -40,9 +58,10 @@ public:
 	template<typename T>static T Swap(T & a, T & b) {
 		T temp = a;
 		a = b;
+		
 		b = temp;
 	}
-	
+	static glm::vec3 Barycentric(glm::vec3 PointOnTriangle, glm::vec3 PointA, glm::vec3 PointB, glm::vec3 PointC);
 	static GLfloat Smoothstep(GLfloat edge0, GLfloat edge1, GLfloat x);
 	static GLfloat Smootherstep(GLfloat edge0, GLfloat edge1, GLfloat x);
 	static GLfloat Lerp(GLfloat Start, GLfloat End, GLfloat Percent);

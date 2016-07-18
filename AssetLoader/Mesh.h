@@ -5,6 +5,7 @@
 #include<gtc/matrix_transform.hpp>
 #include<gtc/type_ptr.hpp>
 #include<vector>
+#define VECCONSOLEOUT(X,STRING) std::cout<<'\n'<<STRING<<X.x<<", "<<X.y<<", "<<X.z;
 //Shader selector for Model/Mesh
 //TEXTURE_2D_HIDDEN_REFLECT is for reflection of undisplayed skybox
 // NO_TEXTURE is for model without texture coorinates, extracts diffuse from mesh

@@ -9,7 +9,7 @@ int Collider::PointsInCollider()
 }
 void Collider::SetModelMatrix(glm::mat4 InMat)
 {
-	ColliderModel = InMat;
+	ColliderModel = InMat*Transform::scale(1,1,1);
 }
 Collider::Collider(const std::string &InPath)
 {
@@ -41,7 +41,9 @@ Collider::~Collider()
 {
 
 }
-void Collider::Draw() 
+Collider::Collider() {}
+
+void Collider::Draw()
 {
 	glBindVertexArray(this->VAO);
 	glEnable(GL_BLEND);
@@ -56,7 +58,11 @@ void Collider::Draw()
 	glDisable(GL_BLEND);
 	glBindVertexArray(0);
 }
-glm::vec3 Collider::GetFurthestPoint(const glm::vec3 &DirectionVector)const
+glm::mat4 Collider::GetColliderMatrix() const
+{
+	return ColliderModel;
+}
+glm::vec3 Collider::GetFurthestPoint(const glm::vec3 &DirectionVector)
 {
 	glm::vec3 WorldVertex = glm::vec3(ColliderModel * glm::vec4(Verts[0].x, Verts[0].y, Verts[0].z, 1));
 
