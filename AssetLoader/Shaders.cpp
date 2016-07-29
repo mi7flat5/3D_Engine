@@ -3,7 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <GL/glew.h>
+
 	// Constructor generates the shader
 Shaders::Shaders(const GLchar* vertexPath, const GLchar* fragmentPath)
 	{
@@ -42,7 +42,10 @@ Shaders::Shaders(const GLchar* vertexPath, const GLchar* fragmentPath)
 		GLint success;
 		GLchar infoLog[512];
 		// Vertex Shader
-		vertex = glCreateShader(GL_VERTEX_SHADER);
+		
+			vertex = glCreateShader(GL_VERTEX_SHADER);
+
+		
 		glShaderSource(vertex, 1, &vShaderCode, NULL);
 		glCompileShader(vertex);
 		// Print compile errors if any

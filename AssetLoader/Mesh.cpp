@@ -1,8 +1,10 @@
 ﻿#include"Mesh.h"
-#include<GL/glew.h>
-#include<glm.hpp>
-#include<gtc/matrix_transform.hpp>
-#include<gtc/type_ptr.hpp>
+
+#include"include\GL\glut.h"
+
+#include"glm-0.9.2.7\glm\glm.hpp"
+#include"glm-0.9.2.7\glm\gtc\matrix_transform.hpp"
+#include"glm-0.9.2.7\glm\gtc\type_ptr.hpp"
 #include<vector>
 #include<sstream>
 #include<iostream>

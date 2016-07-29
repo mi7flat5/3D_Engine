@@ -1,7 +1,5 @@
 #include "SHCamera.h"
-#include<glm.hpp>
-#include<gtc/matrix_transform.hpp>
-#include<gtc/type_ptr.hpp>
+
 #include<iostream>
 #include"Transform.h"
 #include"Control.hpp"
@@ -17,7 +15,7 @@ SHCamera::SHCamera (GLuint Width,GLuint Height) : pitch(15),
 	
 	WIDTH = Width;
 	HEIGHT = Height;
-	Home = glm::vec3(0,35,0);
+	Home = glm::vec3(0,16,0);
 	radius = 20.0;
 	TargSelect = false;
 	Moving = false;
@@ -31,8 +29,9 @@ SHCamera::SHCamera (GLuint Width,GLuint Height) : pitch(15),
 SHCamera::~SHCamera(){}
 
 
-
+glm::vec3 SHCamera::GetHome()const {  return Home; }
 void SHCamera::SwithTarget() {
+	
 	if (!Moving)
 	{
 		if (TargSelect)
@@ -96,7 +95,7 @@ void SHCamera::UpdateOffsetsVectors()
 
 	front.x = radius * sin(glm::radians(phi))*cos(glm::radians(theta));
 	//if (campos.y > TerrainHeight)
-		front.y = radius * cos(glm::radians(pitch + 90)) + 5; //TODO add parameter for adjusting y facing offset
+		front.y = radius * cos(glm::radians(pitch + 90))+10; //TODO add parameter for adjusting y facing offset
 	front.z = radius * sin(glm::radians(phi))*sin(glm::radians(theta));
 	camfront = glm::normalize(front);
 	
@@ -105,8 +104,13 @@ void SHCamera::UpdateOffsetsVectors()
 	Xoffset = hdist*sin(glm::radians(yaw));
 	Zoffset = hdist*cos(glm::radians(yaw));
 
-	Right = glm::normalize(glm::cross(camfront, camup));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-														  //camup = glm::normalize(glm::cross(Right, camfront));
+	Right = glm::normalize(glm::cross(camup,camfront));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+														
+}
+glm::vec3 SHCamera::GetXZfront() {
+	
+	
+	return glm::cross(Right,camup);
 }
 glm::vec3 SHCamera::MovePosition(glm::vec3 Start, glm::vec3 end) {
 
@@ -162,6 +166,10 @@ void SHCamera::SetYaw(GLfloat InYaw) {
 void SHCamera::SetPitch(GLfloat InPitch)
 {
 	pitch += InPitch;
+}
+glm::vec3 SHCamera::GetRight()
+{
+	return Right;
 }
 glm::mat4 SHCamera::UpdateCamera() {
 	

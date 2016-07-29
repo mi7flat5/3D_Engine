@@ -1,8 +1,8 @@
 #include "LoadUtility.h"
-#include<SOIL.h>
+#include"include\SOIL\SOIL.h"
 #include<fstream>
 #include<sstream>
-#include<jpeglib.h>
+
 #include<algorithm>
 #include<map>
 
@@ -51,7 +51,7 @@ void LoadUtility::loadModel( std::vector<Mesh> &InMeshVec,const std::string &pat
 				tmpNorm.y = tmpMesh->mNormals[j].y;
 				tmpNorm.z = tmpMesh->mNormals[j].z;
 			}
-			
+		
 			glm::vec3 tmpTang, tmpBitTang;
 			if (tmpMesh->HasTangentsAndBitangents())
 			{
@@ -262,7 +262,7 @@ GLuint LoadUtility::loadCubemap()
 	
 	return TexID;
 }
-//Returns height values in multi dimesional vector/array for client side access to terrain height, slows load time
+//Returns height values in multi dimesional vector/array for application access to terrain height, slows load time
 void LoadUtility::loadHeightMap(std::string Path, int &Width, int &Height, std::vector< std::vector<GLfloat> > &InVec)
 {
 	unsigned char* image = nullptr;
@@ -286,6 +286,7 @@ void LoadUtility::loadHeightMap(std::string Path, int &Width, int &Height, std::
 		SOIL_free_image_data(image);
 	}
 }
+//Returns raw pixel image for application acess to height values
 unsigned char* LoadUtility::loadHeightMap(std::string Path, int &Width, int &Height) {
 	unsigned char* image = nullptr;
 	GLuint k = 0;
@@ -297,6 +298,7 @@ unsigned char* LoadUtility::loadHeightMap(std::string Path, int &Width, int &Hei
 	}
 	return image;
 }
+//Loads vertex data for collision detection and for collider box debug rendering
 void LoadUtility::LoadCollider(const std::string &path, std::vector<glm::vec3> &InVerts, std::vector<GLuint> &InIndices, std::vector<glm::vec3> &InRenderVerts) {
 
 	Assimp::Importer importer;
@@ -326,7 +328,7 @@ void LoadUtility::LoadCollider(const std::string &path, std::vector<glm::vec3> &
 			InIndices.push_back(tmpFace.mIndices[k]);
 		}
 	}
-	//assimp duplicates vertices so I have to use a map to weed out duplicates
+	//assimp duplicates vertices, using map to weed out duplicates
 	for (int j = 0;j < tmpMesh->mNumVertices;++j)
 	{
 		VertMap[tmpMesh->mVertices[j]] = j;
@@ -335,7 +337,7 @@ void LoadUtility::LoadCollider(const std::string &path, std::vector<glm::vec3> &
 
 	for (it_type iterator = VertMap.begin(); iterator != VertMap.end(); iterator++)
 	{
-		//std::map cannot sort glm::vec3 so i leave it in assimp's vector3D and convert here
+		//std::map cannot sort glm::vec3, leave it in assimp's vector3D and convert here
 		glm::vec3 tmpPos;
 		tmpPos.x = iterator->first.x;
 		tmpPos.y = iterator->first.y;

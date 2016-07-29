@@ -2,9 +2,9 @@
 #define CONTROL_HPP
 
 #include"Actor.hpp"
-#include<GL/glew.h>
-#include<GLFW/glfw3.h>
-#include<GL/glut.h>
+#include"include/GL/glew.h"
+#include"include/GLFW/glfw3.h"
+#include"include/GL/glut.h"
 #include"SHCamera.h"
 
 class Control
@@ -12,8 +12,10 @@ class Control
 	static GLFWwindow* Window;
 	static Actor* Pawn;
 	static SHCamera* Camera;
+
+	Actor* Target;
 	
-	GLfloat lastX, lastY,lastFrame;
+	GLfloat lastX, lastY,lastFrame,rate;
 	GLdouble TimePassed;
 	GLint Dstate;
 	
@@ -27,6 +29,9 @@ public:
 	void SetCamera(SHCamera *);
 	~Control();
 	void UpdateControls();
+	void SetTarget(Actor* InTarget);
 	
 };
+
+
 #endif // !CONTROL_HPP

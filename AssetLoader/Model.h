@@ -9,6 +9,7 @@
 #include"SHCamera.h"
 
 class Model {
+	friend class Renderer;
 protected:
 	GLuint SkyBox;//Move to Cubmap
 	GLuint SkyBoxReflect;//also
@@ -19,6 +20,7 @@ protected:
 	GLuint ViewMatrixID;
 	GLuint ModelMatrixID;
 	MeshType ModelMaterial;
+	
 	Shaders* ModelShader;//Has to be set in base class constructor
 
 	GLint lightPosLoc;
@@ -39,6 +41,7 @@ protected:
 public:
 	//determines which shader to load,loads models and meshes for all subclasses. 
 	Model(const std::string & InPath, MeshType);
+	Model();
 	~Model();
 	
 	virtual void Draw(glm::vec3 & campos, glm::mat4 & Model);

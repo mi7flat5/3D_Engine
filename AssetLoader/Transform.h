@@ -4,9 +4,9 @@
 // Rotate is a helper function
 
 // Include the helper glm library, including matrix transform extensions
-#include<GL/glew.h>
-#include <glm.hpp>
-#include <gtc/matrix_transform.hpp>
+#include "include/GL/glew.h"
+#include"glm-0.9.2.7\glm\glm.hpp"
+#include"glm-0.9.2.7\glm\gtc\matrix_transform.hpp"
 #include <limits>
 // glm provides vector, matrix classes like glsl
 // Typedefs to make code more readable 

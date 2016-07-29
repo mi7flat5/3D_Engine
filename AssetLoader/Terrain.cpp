@@ -1,9 +1,9 @@
 #include"Terrain.hpp"
 #include"LoadUtility.h"
-#include<SOIL.h>
+#include"include\SOIL\SOIL.h"
 
 
-
+Terrain::Terrain() {}
 Terrain::Terrain(const std::string &InPath, MeshType Mat) : Model(InPath, Mat) {
 	
 	HeightMapImage = LoadUtility::loadHeightMap("media/hm_d.jpg", Width, Height);

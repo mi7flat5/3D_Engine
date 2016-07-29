@@ -3,20 +3,28 @@
 
 #include<vector>
 #include<string>
-#include<glm.hpp>
-#include<gtc/matrix_transform.hpp>
-#include<gtc/type_ptr.hpp>
-#include<GL/glew.h>
+#include"glm-0.9.2.7\glm\glm.hpp"
+#include"glm-0.9.2.7\glm\gtc\matrix_transform.hpp"
+#include"glm-0.9.2.7\glm\gtc\type_ptr.hpp"
+
 #include"Shaders.hpp"
+
 class Collider
 {
 	std::vector<glm::vec3> Verts, RenderVerts;
 	std::vector<GLuint> Indices;
 	glm::mat4 ColliderModel;
-	GLuint  VAO, VBO,EBO, ProjectionMatrixID, ViewMatrixID, ModelMatrixID;
-	Shaders * ModelShader;
-	
+	GLuint  VAO, VBO,EBO, ProjectionMatrixID, 
+		ViewMatrixID, ModelMatrixID,
+		DebugPoint1, DebugPoint2;
 
+	GLuint tVao, tVbo;
+
+	Shaders * ModelShader;
+	Shaders * DebuglineShader;
+	GLuint SphereRadius;
+
+	
 	
 	
 public:
@@ -29,6 +37,18 @@ public:
 	glm::mat4 GetColliderMatrix()const;
 	
 	 glm::vec3 GetFurthestPoint(const glm::vec3 & DirectionVector);
+
+	 bool SphereRayCollider(glm::vec4 RayStart, glm::vec4 RayDirection);
+
+	 bool SphereRayCollider(glm::vec3 RayStart, glm::vec3 RayDirection);
+
+	 glm::vec3 GetPosition() const;
+
+	 bool SphereSphereCollider(Collider * TargetCollider);
+
+	 GLuint GetRadius()const;
+	 glm::mat4 GetColliderModelMatrix()const;
+	
 	
 };
 

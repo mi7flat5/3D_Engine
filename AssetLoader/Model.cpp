@@ -8,16 +8,16 @@ Model::Model(const std::string &InPath, MeshType Mat)
 	IsNormMapping = true;
 	DispLevel = 0.0;
 	Shininess = 0.2;
-	
-	switch (Mat)
-	{
-							
+	try {
+		switch (Mat)
+		{
+
 		case MeshType::TEXTURE_2D_DISPLACEMENT:
-			ModelShader = new Shaders(  "shaders/PassThrough.vs.glsl", 
-										"shaders/PassThrough.tcs.glsl",
-										"shaders/PassThrough.tes.glsl", 
-										"shaders/PassThrough.fs.glsl");
-			
+			ModelShader = new Shaders("shaders/PassThrough.vs.glsl",
+				"shaders/PassThrough.tcs.glsl",
+				"shaders/PassThrough.tes.glsl",
+				"shaders/PassThrough.fs.glsl");
+
 			NormMappingID = glGetUniformLocation(ModelShader->getProgram(), "NormMapping");
 			DispLevelID = glGetUniformLocation(ModelShader->getProgram(), "DispLevel");
 			SpecularShininessID = glGetUniformLocation(ModelShader->getProgram(), "material.shininess");
@@ -26,9 +26,9 @@ Model::Model(const std::string &InPath, MeshType Mat)
 			break;
 		case MeshType::TERRAIN:
 			/*ModelShader = new Shaders(  "shaders/dispmap.vs.glsl",
-									    "shaders/dispmap.tcs.glsl",
-									    "shaders/dispmap.tes.glsl",
-									    "shaders/dispmap.fs.glsl");*/
+										"shaders/dispmap.tcs.glsl",
+										"shaders/dispmap.tes.glsl",
+										"shaders/dispmap.fs.glsl");*/
 			break;
 		case MeshType::TEXTURE_2D_REFLECT:
 			ModelShader = new Shaders("shaders/ReflectVert.glsl", "shaders/ReflectFrag.glsl");
@@ -39,7 +39,7 @@ Model::Model(const std::string &InPath, MeshType Mat)
 			ModelShader = new Shaders("shaders/ReflectVert.glsl", "shaders/RefractFrag.glsl");
 			for (GLuint i = 0; i < meshes.size();i++)
 				meshes[i].SetShader(ModelShader->getProgram());
-		
+
 			break;
 		case MeshType::SKYBOX:
 			ModelShader = new Shaders("shaders/3Dvert.glsl", "shaders/3Dfrag.glsl");
@@ -61,9 +61,10 @@ Model::Model(const std::string &InPath, MeshType Mat)
 			ModelShader = new Shaders("shaders/texVert.glsl", "shaders/texFrag.glsl");
 			for (GLuint i = 0; i < meshes.size();i++)
 				meshes[i].SetShader(ModelShader->getProgram());
-		//TODO add cases for undisplayed cubemap
+			//TODO add cases for undisplayed cubemap
+		}
 	}
-	
+	catch (...) {};
 	switch (Mat)
 	{
 	case (MeshType::TERRAIN):
@@ -81,6 +82,10 @@ Model::Model(const std::string &InPath, MeshType Mat)
 
 	}
 
+}
+
+Model::Model()
+{
 }
 
 Model::~Model()

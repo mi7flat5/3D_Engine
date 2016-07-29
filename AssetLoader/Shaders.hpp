@@ -1,7 +1,9 @@
 #ifndef SHADERS_HPP
 #define SHADERS_HPP
+#include"include\GL\glew.h"
+#include"include\GL\glut.h"
 
-#include <GL/glew.h>
+
 
 class Shaders
 {

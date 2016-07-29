@@ -1,98 +1,96 @@
-﻿
-#include<GL/glew.h>
-#include<GLFW/glfw3.h>
-#include<GL/glut.h>
-#include"Model.h"
-#include"Transform.h"
-#include"SHCamera.h"
-#include"Terrain.hpp"
-#include"CubeMap.hpp"
-#include"Actor.hpp"
-#include"Collider.hpp"
-#include"Collision.hpp"
-#include"Control.hpp"
-
-#include"StaticVariables.h"
-
+﻿#include"StaticVariables.h"
+#include<thread>
+#include <future>
+#include"GraphicsDebug.h"
+#include<functional>
+#include"Observer.hpp"
 GLFWwindow* initialize();
-GLuint WIDTH = 600;
-GLuint HEIGHT = 800;
 GLfloat fov = 90.0f;
+
 
 int main() { 
 	
-	SHCamera cam(WIDTH, HEIGHT);
+	
 	GLFWwindow* window = initialize();
 	if (!window)
 		return -1;
+	SHCamera cam(WIDTH, HEIGHT);
 
 	Collision tester;
 	Collider test("assets/ColliderBox.obj");
-	Collider test2("assets/box.fbx");
+	Collider test2("assets/ColliderBox.obj");
+	Collider nocollide("assets/ColliderBox.obj");
+
+	std::unique_ptr<CubeMap> Sky = std::make_unique<CubeMap>( MeshType::SKYBOX);
+	std::unique_ptr<Terrain> Ground = std::make_unique<Terrain>("assets/ParisTerrain.fbx", MeshType::TERRAIN);
+	Actor* Character = new Actor("assets/box.fbx", MeshType::TEXTURE_2D_REFLECT, &cam, &*Ground, &test);
+	
+	Actor Sphere("assets/sphere.fbx", MeshType::TEXTURE_2D_REFLECT, &cam, &*Ground, &test2);
+	Actor Arrow("assets/arrow.fbx", MeshType::NO_TEXTURE, &cam, &*Ground, &nocollide);
+
 	
 	
-	CubeMap Sky(MeshType::SKYBOX);
-	Terrain Ground("assets/ParisTerrain.fbx", MeshType::TERRAIN);
-	Actor Character("assets/GrossFace.fbx", MeshType::TEXTURE_2D_REFLECT, &cam, &Ground, &test);
-	Actor arrow("assets/sphere.fbx", MeshType::TEXTURE_2D_REFLECT, &cam, &Ground, &test2);
+	Sphere.SetTransforms(Transform::scale(6,6,6));
+	Character->SetTransforms(Transform::scale(3, 3, 3));
+	Arrow.SetTransforms(Transform::scale(3, 3, 3));
+	Character->SetPosition(glm::vec3(30, 15, 300));
+	Sphere.SetPosition(glm::vec3(-30,15,-300));
 	
-	
-	arrow.SetTransforms(Transform::scale(20,20,20));
-	arrow.SetPosition(glm::vec3(-30,15,-30));
-	Character.SetPosition(glm::vec3(30,15,30));
 		
-	arrow.Draw();
-	Character.Draw();
-	Control control(window,&Character,&cam);
 	
+	
+
+	Sphere.Draw();
+	Character->Draw();
+	Arrow.Draw();
+	Control control(window,&*Character,&cam);
+	control.SetTarget(&Arrow);
 	SHCamera::Projection = glm::perspective(fov, (float)HEIGHT / WIDTH, 0.1f, 1800.0f);
+	
 	while (!glfwWindowShouldClose(window)) 
 		{
+
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glfwPollEvents();
 			control.UpdateControls();
 
 			
 		
-			if (tester.IsCollision(test, test2))
-			{
-
-				Character.CorrectCollision(tester.GetCollisionNormal(), tester.GetPenetrationDepth());
-				//arrow.CorrectCollision(-tester.GetCollisionNormal(), tester.GetPenetrationDepth());
-				VECCONSOLEOUT(Character.GetPosition(),"Char Position :")
-			}
-			
-		
-		
-
-			static double timepassed;
-			double seconds = glfwGetTime();
-			if (seconds - timepassed > 0.009) {
 				if (glfwGetKey(window, GLFW_KEY_L))
-					control.SetPawn(&arrow);
+					control.SetPawn(&Arrow);
 				if (glfwGetKey(window, GLFW_KEY_K))
-					control.SetPawn(&Character);
-			}
-			timepassed = glfwGetTime();
+					control.SetPawn(&*Character);
+		
 						
-			Sky.Draw();
-			Ground.Draw();
-			Character.Draw();
-			arrow.Draw();
-			test.Draw();
-			test2.Draw();
-			
-		
-			
-			
-		
-			glfwSwapBuffers(window);
+			auto f = std::async(&Collision::IsCollision,&tester, test,test2);
 				
-		
-		}
+			if (f.get())
+			{
+				
+				std::thread t2(&Actor::CorrectCollision, Character, tester.GetCollisionNormal(), tester.GetPenetrationDepth()), 
+					t3(&Actor::CorrectCollision, &Sphere, -tester.GetCollisionNormal()*10.0f, tester.GetPenetrationDepth());
+				VECCONSOLEOUT(Character->GetPosition(), "Char Position :")
+					t2.join();
+					t3.join();
+			}
+					
+			Character->CheckSphereCollision(Arrow.GetCollider());
 
-	glfwTerminate();
+			Sky->Draw();
+			Ground->Draw();
+			Character->Draw();
+			Sphere.Draw();
+			Arrow.Draw();
+
+			
+		
+					
+			glfwSwapBuffers(window);
+					
+		}
 	
+	glfwTerminate();
+	delete Character;
 	return 0; 
 }
 

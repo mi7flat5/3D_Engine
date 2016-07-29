@@ -94,7 +94,7 @@ bool Collision::ExpandPolytope() {
 
 bool Collision::IsCollision(Collider &First, Collider &Second) {
 
-	//int LoopMax = Transform::Min(First.PointsInCollider(), Second.PointsInCollider());
+	int LoopMax = Transform::Min(First.PointsInCollider(), Second.PointsInCollider());
 	ColliderA = &First;
 	ColliderB = &Second;
 	glm::vec3 Direction = glm::vec3(0, 0, 1);
@@ -103,7 +103,7 @@ bool Collision::IsCollision(Collider &First, Collider &Second) {
 	Simplex.push_front(S);
 	Direction = -S;
 
-	for (int i =0;i<8;++i)
+	for (int i =0;i<LoopMax;++i)
 	{
 		MostRecentAdded = Support(First, Second, Direction);
 		
@@ -267,13 +267,13 @@ bool Collision::FindTetrahedron(glm::vec3& Direction)
 	const int OVER_ADB = 0x4;
 	const int INSIDE_TETRAHEDRON = 0x0;
 	
-	int PLANE_TEST = (glm::dot(ABC, AOrigin) > 0 ? OVER_ABC : 0)
-		| (glm::dot(ACD, AOrigin) > 0 ? OVER_ACD : 0)
-		| (glm::dot(ADB, AOrigin) > 0 ? OVER_ADB : 0);
+	int PLANE_TEST = (glm::dot(ABC, AOrigin) > 0 ? OVER_ABC : INSIDE_TETRAHEDRON)
+		| (glm::dot(ACD, AOrigin) > 0 ? OVER_ACD : INSIDE_TETRAHEDRON)
+		| (glm::dot(ADB, AOrigin) > 0 ? OVER_ADB : INSIDE_TETRAHEDRON);
 
 	switch (PLANE_TEST)
 	{
-		case (0):
+		case (INSIDE_TETRAHEDRON):
 			
 			ExpandPolytope();
 			return true;
@@ -306,7 +306,7 @@ bool Collision::FindTetrahedron(glm::vec3& Direction)
 			ObjectPointsA.pop_back();
 		
 			Direction = ABC;
-			break;
+			return false;
 		case (OVER_ACD):
 			Simplex[1] = Simplex[0];
 			ObjectPointsA[1] = ObjectPointsA[0];
@@ -338,7 +338,7 @@ bool Collision::FindTetrahedron(glm::vec3& Direction)
 			ObjectPointsA.pop_front();
 		
 			Direction = ACD;
-			break;
+			return false;
 		case (OVER_ADB):
 			Simplex[2] = Simplex[1];
 			Simplex[1] = Simplex[3];
@@ -372,7 +372,7 @@ bool Collision::FindTetrahedron(glm::vec3& Direction)
 			ObjectPointsA.pop_back();
 		
 			Direction = ADB;
-			break;
+			return false;
 		case(OVER_ABC|OVER_ACD):
 		
 			if (glm::dot(glm::cross(ABC, AC), AOrigin) > 0)
@@ -407,7 +407,7 @@ bool Collision::FindTetrahedron(glm::vec3& Direction)
 				ObjectPointsA.pop_front();
 			
 				Direction = ACD;
-				break;
+				return false;
 			}
 			if (glm::dot(glm::cross(AB, ABC), AOrigin) > 0)
 			{
@@ -423,7 +423,7 @@ bool Collision::FindTetrahedron(glm::vec3& Direction)
 			ObjectPointsA.pop_back();
 		
 			Direction = ABC;
-			break;
+			return false;
 		case(OVER_ABC|OVER_ADB):
 			if (glm::dot(glm::cross(ABC, AC), AOrigin) > 0)
 			{
@@ -458,7 +458,7 @@ bool Collision::FindTetrahedron(glm::vec3& Direction)
 				ObjectPointsA.pop_back();
 			
 				Direction = ADB;
-				break;
+				return false;
 			}
 			if (glm::dot(glm::cross(AB, ABC), AOrigin) > 0)
 			{
@@ -474,7 +474,7 @@ bool Collision::FindTetrahedron(glm::vec3& Direction)
 			ObjectPointsA.pop_back();
 			
 			Direction = ABC;
-			break;
+			return false;
 		case(OVER_ACD|OVER_ADB):
 			if (glm::dot(glm::cross(ACD, AC), AOrigin) > 0)
 			{
@@ -510,7 +510,7 @@ bool Collision::FindTetrahedron(glm::vec3& Direction)
 				ObjectPointsA.pop_back();
 			
 				Direction = ADB;
-				break;
+				return false;
 			}
 			if (glm::dot(glm::cross(AD, ACD), AOrigin) > 0)
 			{
@@ -530,11 +530,12 @@ bool Collision::FindTetrahedron(glm::vec3& Direction)
 			ObjectPointsA.pop_front();
 		
 			Direction = ACD;
-			break;
+			return false;
 		default:
 			return false;
-			break;
+		
 	}
+	
 	return false;
 }
 glm::vec3 Collision::Dcross(const glm::vec3 &a, const  glm::vec3 &b) {

@@ -2,7 +2,7 @@
 #define TERRAIN_HPP
 #include"Model.h"
 
-class Terrain : protected Model {
+class Terrain : public Model {
 
 	GLint Width, Height;
 	GLuint Scale, LastValidHeight;
@@ -13,6 +13,7 @@ class Terrain : protected Model {
 	void SetMinMaxBoundry();
 
 public:
+	Terrain();
 	Terrain(const std::string &InPath, MeshType shader);
 	~Terrain();
 	GLuint GetHeight(glm::vec3);

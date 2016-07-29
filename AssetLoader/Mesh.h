@@ -1,9 +1,9 @@
 #ifndef MESH_H
 #define MESH_H
-#include<GL/glew.h>
-#include<glm.hpp>
-#include<gtc/matrix_transform.hpp>
-#include<gtc/type_ptr.hpp>
+#include"include/GL/glew.h"
+#include"glm-0.9.2.7\glm\glm.hpp"
+#include"glm-0.9.2.7\glm\gtc\matrix_transform.hpp"
+#include"glm-0.9.2.7\glm\gtc\type_ptr.hpp"
 #include<vector>
 #define VECCONSOLEOUT(X,STRING) std::cout<<'\n'<<STRING<<X.x<<", "<<X.y<<", "<<X.z;
 //Shader selector for Model/Mesh

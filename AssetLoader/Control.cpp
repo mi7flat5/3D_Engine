@@ -14,6 +14,7 @@ void Control::scroll_callback(GLFWwindow* Window, double xoffset, double yoffset
 }
 void Control::key_callback(GLFWwindow* Window, int key, int scancode, int action, int mode)
 {
+	GLfloat rate = Control::DeltaTime * 40;
 	static double timepassed;
 	double seconds = glfwGetTime();
 	GLint Spacestate = glfwGetKey(Window, GLFW_KEY_SPACE);
@@ -24,11 +25,18 @@ void Control::key_callback(GLFWwindow* Window, int key, int scancode, int action
 		{	if(!Control::Camera->IsMoving())
 				Control::Camera->SwithTarget();
 		}
-		if (key == GLFW_KEY_SPACE&& action == GLFW_PRESS)
-			Pawn->Jump(true);
-		else if (Spacestate == GLFW_RELEASE) Pawn->Jump(false);
+		
+	
 	}
 	timepassed = glfwGetTime();
+	if (key == GLFW_KEY_W && action == GLFW_PRESS)
+	{
+		Control::Pawn->MoveForward(1.0);
+	}
+	if (key == GLFW_KEY_W && action == GLFW_RELEASE)
+	{
+		Control::Pawn->MoveForward(0.0);
+	}
 }
 Control::Control(GLFWwindow *InWindow, Actor *InPawn, SHCamera *InCamera)
 {
@@ -39,7 +47,13 @@ Control::Control(GLFWwindow *InWindow, Actor *InPawn, SHCamera *InCamera)
 	
 	glfwSetScrollCallback(Window, Control::scroll_callback);
 	glfwSetKeyCallback(Window, Control::key_callback);
-	glfwSetInputMode(Window, GLFW_STICKY_KEYS, 1);
+	(Window, GLFW_STICKY_KEYS, 1);
+}
+void Control::SetTarget(Actor* InTarget) {
+	
+		Target = InTarget;
+		
+	
 }
 void Control::SetWindow(GLFWwindow *InWin)
 {
@@ -48,15 +62,19 @@ void Control::SetWindow(GLFWwindow *InWin)
 }
 void Control::SetPawn(Actor * InPawn)
 {
-	if (InPawn)
-	{
-		if (!Control::Camera->IsMoving()) {
-					
+	static double timepassed;
+	double seconds = glfwGetTime();
+	if (seconds - timepassed > 0.15) {
+
+			SetTarget(Control::Pawn);
+		
 			Control::Pawn->SetCameraState(false);
+			InPawn->SetCameraState(true);
 			Control::Pawn = InPawn;
-			Control::Pawn->SetCameraState(true);
-		}
 	}
+		timepassed = glfwGetTime();
+		
+	
 }
 
 void Control::SetCamera(SHCamera * InCam)
@@ -71,10 +89,16 @@ void Control::UpdateControls() {
 	GLfloat currentFrame = glfwGetTime();
 	Control::DeltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
-	GLfloat rate = Control::DeltaTime * 40;
+	rate = Control::DeltaTime * 40;
 
 	Dstate = glfwGetKey(Window, GLFW_KEY_0);
+	
+	if (glfwGetKey(Window, GLFW_KEY_R))
+	{
+		if(Target)
+		Pawn->ShootRay(Target);
 		
+	}
 	if (glfwGetKey(Window, GLFW_KEY_Q))
 	{
 		Pawn->StrafeLeft(rate);
@@ -83,10 +107,7 @@ void Control::UpdateControls() {
 	{
 		Pawn->StrafeRight(rate);
 	}
-	if (glfwGetKey(Window, GLFW_KEY_W))
-	{
-		Pawn->MoveForward(rate);
-	}
+	
 	if (glfwGetKey(Window, GLFW_KEY_S))
 	{
 		Pawn->MoveBackward(rate);

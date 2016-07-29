@@ -1,10 +1,10 @@
 #ifndef SHCAMERA_H
 #define SHCAMERA_H
-#include<GL\glew.h>
-#include<GLFW\glfw3.h>
-#include<glm.hpp>
-#include<gtc/matrix_transform.hpp>
-#include<gtc/type_ptr.hpp>
+#include"include\GL\glew.h"
+
+#include"glm-0.9.2.7\glm\glm.hpp"
+#include"glm-0.9.2.7\glm\gtc\matrix_transform.hpp"
+#include"glm-0.9.2.7\glm\gtc\type_ptr.hpp"
 
 class SHCamera
 {
@@ -20,6 +20,10 @@ class SHCamera
 	glm::mat4 CurrentView;
 	
 	void SHCamera::UpdateOffsetsVectors();
+
+	
+
+	
 		
 	bool TargSelect;
 	bool Moving;
@@ -31,7 +35,9 @@ public:
 	glm::vec3 MovePositionReverse(glm::vec3 Start, glm::vec3 end);
 	SHCamera(GLuint Width, GLuint Height);
 	~SHCamera();
+	glm::vec3 GetXZfront();
 	
+	glm::vec3 GetHome() const;
 	void SwithTarget();
 	bool IsMoving();
 	glm::mat4 UpdateCamera(  glm::vec3&);
@@ -47,7 +53,7 @@ public:
 	GLfloat GetYaw()const;
 	void SetHome(glm::vec3&);
 	void SetPitch(GLfloat InPitch);
-	
+	glm::vec3 GetRight();
 	static glm::mat4 Projection;
 	static glm::mat4 View;
 	

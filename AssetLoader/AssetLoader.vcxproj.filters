@@ -16,6 +16,9 @@
     <Filter Include="shaders">
       <UniqueIdentifier>{b41a9f31-beff-46f6-8f28-c1b0879a315f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Actor">
+      <UniqueIdentifier>{a5a75476-d8e0-4f39-b2ab-b8f4451f32e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp">
@@ -55,6 +58,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Control.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsDebug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -100,6 +106,15 @@
     </ClInclude>
     <ClInclude Include="StaticVariables.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsDebug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Observer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ActorComponents.hpp">
+      <Filter>Source Files\Actor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +176,9 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="shaders\ColliderVert.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\dbgVert.glsl">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

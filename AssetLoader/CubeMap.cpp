@@ -1,5 +1,5 @@
 #include "CubeMap.hpp"
-
+CubeMap::CubeMap() {}
 CubeMap::CubeMap(MeshType shader):Model("assets/box.fbx",shader)
 {
 	bIsDrawn = true;
