@@ -36,7 +36,7 @@ int main() {
 	Character->SetPosition(glm::vec3(30, 15, 300));
 	Sphere.SetPosition(glm::vec3(-30,15,-300));
 	
-		
+	
 	
 	
 
@@ -81,7 +81,8 @@ int main() {
 			Character->Draw();
 			Sphere.Draw();
 			Arrow.Draw();
-
+			test.Draw();
+			test2.Draw();
 			
 		
 					
