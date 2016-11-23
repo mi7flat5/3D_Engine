@@ -51,6 +51,7 @@ void Mesh::setupMesh()
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 		glEnableVertexAttribArray(1);//indices
 		glVertexAttribPointer(1, 3, GL_UNSIGNED_INT, GL_FALSE, 0, (GLvoid*)0);
+		
 	}
 	
 	switch (MeshMaterial)

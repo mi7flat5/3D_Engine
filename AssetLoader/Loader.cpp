@@ -23,7 +23,7 @@ int main() {
 
 	std::unique_ptr<CubeMap> Sky = std::make_unique<CubeMap>( MeshType::SKYBOX);
 	std::unique_ptr<Terrain> Ground = std::make_unique<Terrain>("assets/ParisTerrain.fbx", MeshType::TERRAIN);
-	Actor* Character = new Actor("assets/box.fbx", MeshType::TEXTURE_2D_REFLECT, &cam, &*Ground, &test);
+	Actor* Character = new Actor("assets/box.fbx", MeshType::NO_TEXTURE, &cam, &*Ground, &test);
 	
 	Actor Sphere("assets/sphere.fbx", MeshType::TEXTURE_2D_REFLECT, &cam, &*Ground, &test2);
 	Actor Arrow("assets/arrow.fbx", MeshType::NO_TEXTURE, &cam, &*Ground, &nocollide);
@@ -81,8 +81,8 @@ int main() {
 			Character->Draw();
 			Sphere.Draw();
 			Arrow.Draw();
-			test.Draw();
-			test2.Draw();
+			//test.Draw();
+			//test2.Draw();
 			
 		
 					
